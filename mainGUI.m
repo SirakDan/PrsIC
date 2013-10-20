@@ -22,7 +22,7 @@ function varargout = mainGUI(varargin)
 
 % Edit the above text to modify the response to help mainGUI
 
-% Last Modified by GUIDE v2.5 19-Oct-2013 15:36:25
+% Last Modified by GUIDE v2.5 20-Oct-2013 13:37:29
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -159,6 +159,7 @@ function setTarget_button_Callback(hObject, eventdata, handles)
 % hObject    handle to setTarget_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 h=msgbox('Please Select the Target using the Left Mouse button');
 uiwait(h,5);
 if ishandle(h) == 1
@@ -237,6 +238,8 @@ global MAX_Y;
 global MAP;
 global xTarget;
 global yTarget;
+global xWaypoint;
+global yWaypoint;
 % hObject    handle to start_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -247,49 +250,69 @@ global yTarget;
 %--------------------------------------------------------------------------
 %IS ON LIST 1/0 |X val |Y val |Parent X val |Parent Y val |h(n) |g(n)|f(n)|
 %--------------------------------------------------------------------------
-OPEN=[];
+
+
+global xStart;
+global yStart;
+xWaypoint
+yWaypoint
+xNode=xStart;
+yNode=yStart;
+
+[m,n] = size(xWaypoint)
+xWaypoint(1, n+1)=xTarget;
+yWaypoint(1, n+1)=yTarget;
+
+%Inicio del bucle. 
+%Idea: que los waypoints sean metas, ir cambiando puntos de inicio y meta.
+for posicion=1:1:n+1,
+    if(posicion ~= 1) 
+        xStart=xTarget;
+        yStart=yTarget;
+    end
+    xTarget=xWaypoint(posicion);
+    yTarget=yWaypoint(posicion);
+    OPEN=[];
 %CLOSED LIST STRUCTURE
 %--------------
 %X val | Y val |
 %--------------
 % CLOSED=zeros(MAX_VAL,2);
-CLOSED=[];
+    CLOSED=[];
 
 %Put all obstacles on the Closed list
-k=1;%Dummy counter
-for i=1:MAX_X
-    for j=1:MAX_Y
-        if(MAP(i,j) == -1)
-            CLOSED(k,1)=i; 
-            CLOSED(k,2)=j; 
-            k=k+1;
+    k=1;%Dummy counter
+    for i=1:MAX_X
+        for j=1:MAX_Y
+            if(MAP(i,j) == -1)
+                CLOSED(k,1)=i; 
+                CLOSED(k,2)=j; 
+                k=k+1;
+            end
         end
     end
-end
-CLOSED_COUNT=size(CLOSED,1);
-%set the starting node as the first node
-global xStart;
-global yStart;
+    CLOSED_COUNT=size(CLOSED,1);
 
-xNode=xStart;
-yNode=yStart;
-OPEN_COUNT=1;
-path_cost=0;
-goal_distance=distance(xNode,yNode,xTarget,yTarget);
-OPEN(OPEN_COUNT,:)=insert_open(xNode,yNode,xNode,yNode,path_cost,goal_distance,goal_distance);
-OPEN(OPEN_COUNT,1)=0;
-CLOSED_COUNT=CLOSED_COUNT+1;
-CLOSED(CLOSED_COUNT,1)=xNode;
-CLOSED(CLOSED_COUNT,2)=yNode;
-NoPath=1;
+%set the starting node as the first node
+
+
+    OPEN_COUNT=1;
+    path_cost=0;
+    goal_distance=distance(xNode,yNode,xTarget,yTarget);
+    OPEN(OPEN_COUNT,:)=insert_open(xNode,yNode,xNode,yNode,path_cost,goal_distance,goal_distance);
+    OPEN(OPEN_COUNT,1)=0;
+    CLOSED_COUNT=CLOSED_COUNT+1;
+    CLOSED(CLOSED_COUNT,1)=xNode;
+    CLOSED(CLOSED_COUNT,2)=yNode;
+    NoPath=1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % START ALGORITHM
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-while((xNode ~= xTarget || yNode ~= yTarget) && NoPath == 1)
+    while((xNode ~= xTarget || yNode ~= yTarget) && NoPath == 1)
 %  plot(xNode+.5,yNode+.5,'go');
- exp_array=expand_array(xNode,yNode,path_cost,xTarget,yTarget,CLOSED,MAX_X,MAX_Y);
- exp_count=size(exp_array,1);
+    exp_array=expand_array(xNode,yNode,path_cost,xTarget,yTarget,CLOSED,MAX_X,MAX_Y);
+    exp_count=size(exp_array,1);
  %UPDATE LIST OPEN WITH THE SUCCESSOR NODES
  %OPEN LIST FORMAT
  %--------------------------------------------------------------------------
@@ -299,68 +322,68 @@ while((xNode ~= xTarget || yNode ~= yTarget) && NoPath == 1)
  %--------------------------------
  %|X val |Y val ||h(n) |g(n)|f(n)|
  %--------------------------------
- for i=1:exp_count
-    flag=0;
-    for j=1:OPEN_COUNT
-        if(exp_array(i,1) == OPEN(j,2) && exp_array(i,2) == OPEN(j,3) )
-            OPEN(j,8)=min(OPEN(j,8),exp_array(i,5)); %#ok<*SAGROW>
-            if OPEN(j,8)== exp_array(i,5)
+    for i=1:exp_count
+        flag=0;
+        for j=1:OPEN_COUNT
+            if(exp_array(i,1) == OPEN(j,2) && exp_array(i,2) == OPEN(j,3) )
+                OPEN(j,8)=min(OPEN(j,8),exp_array(i,5)); %#ok<*SAGROW>
+                if OPEN(j,8)== exp_array(i,5)
                 %UPDATE PARENTS,gn,hn
-                OPEN(j,4)=xNode;
-                OPEN(j,5)=yNode;
-                OPEN(j,6)=exp_array(i,3);
-                OPEN(j,7)=exp_array(i,4);
-            end;%End of minimum fn check
-            flag=1;
-        end;%End of node check
+                    OPEN(j,4)=xNode;
+                    OPEN(j,5)=yNode;
+                    OPEN(j,6)=exp_array(i,3);
+                    OPEN(j,7)=exp_array(i,4);
+                end;%End of minimum fn check
+                flag=1;
+            end;%End of node check
 %         if flag == 1
 %             break;
-    end;%End of j for
-    if flag == 0
-        OPEN_COUNT = OPEN_COUNT+1;
-        OPEN(OPEN_COUNT,:)=insert_open(exp_array(i,1),exp_array(i,2),xNode,yNode,exp_array(i,3),exp_array(i,4),exp_array(i,5));
-     end;%End of insert new element into the OPEN list
- end;%End of i for
+        end;%End of j for
+        if flag == 0
+            OPEN_COUNT = OPEN_COUNT+1;
+            OPEN(OPEN_COUNT,:)=insert_open(exp_array(i,1),exp_array(i,2),xNode,yNode,exp_array(i,3),exp_array(i,4),exp_array(i,5));
+        end;%End of insert new element into the OPEN list
+    end;%End of i for
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %END OF WHILE LOOP
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  %Find out the node with the smallest fn 
-  index_min_node = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget);
-  if (index_min_node ~= -1)    
+    index_min_node = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget);
+    if (index_min_node ~= -1)    
    %Set xNode and yNode to the node with minimum fn
-   xNode=OPEN(index_min_node,2);
-   yNode=OPEN(index_min_node,3);
-   path_cost=OPEN(index_min_node,6);%Update the cost of reaching the parent node
+        xNode=OPEN(index_min_node,2);
+        yNode=OPEN(index_min_node,3);
+        path_cost=OPEN(index_min_node,6);%Update the cost of reaching the parent node
   %Move the Node to list CLOSED
-  CLOSED_COUNT=CLOSED_COUNT+1;
-  CLOSED(CLOSED_COUNT,1)=xNode;
-  CLOSED(CLOSED_COUNT,2)=yNode;
-  OPEN(index_min_node,1)=0;
-  else
+    CLOSED_COUNT=CLOSED_COUNT+1;
+    CLOSED(CLOSED_COUNT,1)=xNode;
+    CLOSED(CLOSED_COUNT,2)=yNode;
+    OPEN(index_min_node,1)=0;
+     else
       %No path exists to the Target!!
-      NoPath=0;%Exits the loop!
-  end;%End of index_min_node check
-end;%End of While Loop
+        NoPath=0;%Exits the loop!
+      end;%End of index_min_node check
+    end;%End of While Loop
 %Once algorithm has run The optimal path is generated by starting of at the
 %last node(if it is the target node) and then identifying its parent node
 %until it reaches the start node.This is the optimal path
 
-i=size(CLOSED,1);
-Optimal_path=[];
-xval=CLOSED(i,1);
-yval=CLOSED(i,2);
-i=1;
-Optimal_path(i,1)=xval;
-Optimal_path(i,2)=yval;
-i=i+1;
+    i=size(CLOSED,1);
+    Optimal_path=[];
+    xval=CLOSED(i,1);
+    yval=CLOSED(i,2);
+    i=1;
+    Optimal_path(i,1)=xval;
+    Optimal_path(i,2)=yval;
+    i=i+1;
 
-if ( (xval == xTarget) && (yval == yTarget))
-    inode=0;
+    if ( (xval == xTarget) && (yval == yTarget))
+         inode=0;
    %Traverse OPEN and determine the parent nodes
-   parent_x=OPEN(node_index(OPEN,xval,yval),4);%node_index returns the index of the node
-   parent_y=OPEN(node_index(OPEN,xval,yval),5);
+      parent_x=OPEN(node_index(OPEN,xval,yval),4);%node_index returns the index of the node
+      parent_y=OPEN(node_index(OPEN,xval,yval),5);
    
-   while( parent_x ~= xStart || parent_y ~= yStart)
+      while( parent_x ~= xStart || parent_y ~= yStart)
            Optimal_path(i,1) = parent_x;
            Optimal_path(i,2) = parent_y;
            %Get the grandparents:-)
@@ -368,22 +391,25 @@ if ( (xval == xTarget) && (yval == yTarget))
            parent_x=OPEN(inode,4);%node_index returns the index of the node
            parent_y=OPEN(inode,5);
            i=i+1;
-    end;
- j=size(Optimal_path,1);
+       end;
+     j=size(Optimal_path,1);
  %Plot the Optimal Path!
- p=plot(Optimal_path(j,1)+.5,Optimal_path(j,2)+.5,'bo');
- j=j-1;
- for i=j:-1:1
-  pause(.25);
-  set(p,'XData',Optimal_path(i,1)+.5,'YData',Optimal_path(i,2)+.5);
- drawnow ;
- end;
- plot(Optimal_path(:,1)+.5,Optimal_path(:,2)+.5);
-else
- pause(1);
- h=msgbox('Sorry, No path exists to the Target!','warn');
- uiwait(h,5);
-end
+     p=plot(Optimal_path(j,1)+.5,Optimal_path(j,2)+.5,'bo');
+     j=j-1;
+     for i=j:-1:1
+      pause(.25);
+      set(p,'XData',Optimal_path(i,1)+.5,'YData',Optimal_path(i,2)+.5);
+      drawnow ;
+     end;
+    plot(Optimal_path(:,1)+.5,Optimal_path(:,2)+.5);
+    else
+    pause(1);
+     h=msgbox('Sorry, No path exists to the Target!','warn');
+    uiwait(h,5);
+    end
+end;
+clear all;
+
 
 
 % --- Executes on button press in clear_button.
@@ -395,7 +421,40 @@ cla reset;
 global MAX_X;
 global MAX_Y;
 global MAP;
+MAX_X=10;
+MAX_Y=10;
 axis([1 MAX_X+1 1 MAX_Y+1]);
 MAP(:,:)=0;
 grid on;
 hold on;
+
+
+% --- Executes on button press in waypoint_button.
+function waypoint_button_Callback(hObject, eventdata, handles)
+% hObject    handle to waypoint_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% hObject    handle to setObstables_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+h=msgbox('Select waypoints using the Left Mouse button,to select the last waypoint use the Right button');
+  xlabel('Select waypoints using the Left Mouse button,to select the last waypoint use the Right button','Color','blue');
+uiwait(h,5);
+if ishandle(h) == 1
+    delete(h);
+end
+global xWaypoint;
+global yWaypoint;
+but=1;
+k=1;
+while but == 1
+    [xval,yval,but] = ginput(1);
+    xval=floor(xval);
+    yval=floor(yval);
+    xWaypoint(k)=xval%Put on the closed list as well
+    yWaypoint(k)=yval
+    %texto='Waypoint' + k;
+    k=k+1;
+    plot(xval+.5,yval+.5,'yo');
+    text(xval+1,yval+.5, 'Waypoint');
+ end%End of While loop
