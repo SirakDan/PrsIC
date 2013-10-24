@@ -422,12 +422,11 @@ cla reset;
 global MAX_X;
 global MAX_Y;
 global MAP;
+clear all;
+global MAX_X;
+global MAX_Y;
 global MAX_VAL;
-global xWaypoint;
-global yWaypoint;
-clear xWaypoint;
-clear yWaypoint;
-
+global MAP;
 MAX_X=10;
 MAX_Y=10;
 %Objects in each coordinate
@@ -444,6 +443,15 @@ axis([1 MAX_X+1 1 MAX_Y+1])
 grid on;
 hold on;
 n=0;%Number of Obstacles
+
+% Choose default command line output for mainGUI
+handles.output = hObject;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% UIWAIT makes mainGUI wait for user response (see UIRESUME)
+% uiwait(handles.figure1);
 
 
 % --- Executes on button press in waypoint_button.
@@ -488,13 +496,11 @@ path = get(handles.file_path, 'String');
 global img;
 global MAX_X;
 global MAX_Y;
-
 img = imread(path);
 imagesc(img);
 [nX,nY,~]=size(img);
-MAX_X = nX - 1
-MAX_Y = nY - 1
-MAP=2*(ones(MAX_X,MAX_Y));
+MAX_X = nX + 1
+MAX_Y = nY + 1
 axis([1 MAX_X+1 1 MAX_Y+1]);
 grid on;
 hold on;
