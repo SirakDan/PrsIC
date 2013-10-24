@@ -1,4 +1,4 @@
-function exp_array=expand_array(node_x,node_y,hn,xTarget,yTarget,CLOSED,MAX_X,MAX_Y)
+function exp_array=expand_array(node_x,node_y,hn,xTarget,yTarget,CLOSED,MAX_X,MAX_Y,mapa)
     %Function to return an expanded array
     %This function takes a node and returns the expanded list
     %of successors,with the calculated fn values.
@@ -6,6 +6,13 @@ function exp_array=expand_array(node_x,node_y,hn,xTarget,yTarget,CLOSED,MAX_X,MA
     %
     %   Copyright 2009-2010 The MathWorks, Inc.
     
+    
+    %Inicializacion de seguridad hasta que mapa esté implementado en el
+    %main:
+    mapa = zeros(MAX_X, MAX_Y);
+    
+    
+    MAX_HEIGHT=50;
     exp_array=[];
     exp_count=1;
     c2=size(CLOSED,1);%Number of elements in CLOSED including the zeros
@@ -21,7 +28,7 @@ function exp_array=expand_array(node_x,node_y,hn,xTarget,yTarget,CLOSED,MAX_X,MA
                             flag=0;
                         end;
                     end;%End of for loop to check if a successor is on closed list.
-                    if (flag == 1)
+                    if (flag == 1 && (abs(mapa(s_x, s_y)-mapa(node_x, node_y)) < MAX_HEIGHT))
                         exp_array(exp_count,1) = s_x;
                         exp_array(exp_count,2) = s_y;
                         exp_array(exp_count,3) = hn+distance(node_x,node_y,s_x,s_y);%cost of travelling to node
