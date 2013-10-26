@@ -57,12 +57,13 @@ global MAX_X;
 global MAX_Y;
 global MAX_VAL;
 global MAP;
+global img;
 MAX_X=10;
 MAX_Y=10;
 %Objects in each coordinate
 MAP=2*(ones(MAX_X,MAX_Y));
-size(MAP)
 MAX_VAL = 10;
+img = zeros(MAX_X,MAX_Y);
 % Obtain Obstacle, Target and Robot Position
 % Initialize the MAP with input values
 % Obstacle=-1,Target = 0,Robot=1,Space=2
@@ -253,8 +254,7 @@ global yWaypoint;
 
 global xStart;
 global yStart;
-xWaypoint
-yWaypoint
+global img;
 xNode=xStart;
 yNode=yStart;
 
@@ -312,7 +312,7 @@ for posicion=1:1:n+1,
 
     while((xNode ~= xTarget || yNode ~= yTarget) && NoPath == 1)
 %  plot(xNode+.5,yNode+.5,'go');
-    exp_array=expand_array(xNode,yNode,path_cost,xTarget,yTarget,CLOSED,MAX_X,MAX_Y);
+    exp_array=expand_array(xNode,yNode,path_cost,xTarget,yTarget,CLOSED,MAX_X,MAX_Y, img);
     exp_count=size(exp_array,1);
  %UPDATE LIST OPEN WITH THE SUCCESSOR NODES
  %OPEN LIST FORMAT
@@ -425,6 +425,8 @@ global MAP;
 global MAX_VAL;
 global xWaypoint;
 global yWaypoint;
+global img;
+
 clear xWaypoint;
 clear yWaypoint;
 
@@ -434,6 +436,7 @@ MAX_Y=10;
 MAP=2*(ones(MAX_X,MAX_Y));
 size(MAP)
 MAX_VAL = 10;
+img = zeros(MAX_X,MAX_Y);
 % Obtain Obstacle, Target and Robot Position
 % Initialize the MAP with input values
 % Obstacle=-1,Target = 0,Robot=1,Space=2
@@ -488,17 +491,22 @@ path = get(handles.file_path, 'String');
 global img;
 global MAX_X;
 global MAX_Y;
+global MAP;
 
-img = imread(path);
-imagesc(img);
+img = imread(path)
+%imshow(img);
+%imagesc(img)
+
+imagesc(flipdim(imrotate(img, -270),1));
 [nX,nY,~]=size(img);
-MAX_X = nX - 1
-MAX_Y = nY - 1
+MAX_X = nX;
+MAX_Y = nY;
 MAP=2*(ones(MAX_X,MAX_Y));
 axis([1 MAX_X+1 1 MAX_Y+1]);
 grid on;
 hold on;
 nSeg=15;
+%img
 
 set(gca,'xtick',linspace(0,nY,15+1),'xticklabel',[],...
     'xgrid','on','xcolor','w',...
