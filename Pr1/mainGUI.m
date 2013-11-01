@@ -22,7 +22,7 @@ function varargout = mainGUI(varargin)
 
 % Edit the above text to modify the response to help mainGUI
 
-% Last Modified by GUIDE v2.5 24-Oct-2013 19:14:59
+% Last Modified by GUIDE v2.5 01-Nov-2013 12:30:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -254,6 +254,7 @@ global yWaypoint;
 
 global xStart;
 global yStart;
+global HEIGHT;
 global img;
 xNode=xStart;
 yNode=yStart;
@@ -312,7 +313,7 @@ for posicion=1:1:n+1,
 
     while((xNode ~= xTarget || yNode ~= yTarget) && NoPath == 1)
 %  plot(xNode+.5,yNode+.5,'go');
-    exp_array=expand_array(xNode,yNode,path_cost,xTarget,yTarget,CLOSED,MAX_X,MAX_Y, img);
+    exp_array=expand_array(xNode,yNode,path_cost,xTarget,yTarget,CLOSED,MAX_X,MAX_Y, img, HEIGHT);
     exp_count=size(exp_array,1);
  %UPDATE LIST OPEN WITH THE SUCCESSOR NODES
  %OPEN LIST FORMAT
@@ -536,3 +537,43 @@ function file_path_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over tractor.
+function tractor_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to tractor (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global HEIGHT
+HEIGHT = 5;
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over human.
+function human_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to human (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global HEIGHT
+HEIGHT = 15;
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over car.
+function car_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to car (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global HEIGHT
+HEIGHT = 50;
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over plane.
+function plane_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to plane (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global HEIGHT
+HEIGHT = 100;
