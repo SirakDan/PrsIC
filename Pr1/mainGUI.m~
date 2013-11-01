@@ -58,8 +58,6 @@ global MAX_Y;
 global MAX_VAL;
 global MAP;
 global img;
-global HEIGHT;
-HEIGHT = 5;
 MAX_X=10;
 MAX_Y=10;
 %Objects in each coordinate
@@ -428,9 +426,8 @@ global MAP;
 global MAX_VAL;
 global xWaypoint;
 global yWaypoint;
-global HEIGHT;
 global img;
-global LAST_HEIGHT;
+
 clear xWaypoint;
 clear yWaypoint;
 
@@ -448,7 +445,6 @@ j=0;
 x_val = 1;
 y_val = 1;
 axis([1 MAX_X+1 1 MAX_Y+1])
-HEIGHT = LAST_HEIGHT;
 grid on;
 hold on;
 n=0;%Number of Obstacles
@@ -552,16 +548,16 @@ function uipanel3_SelectionChangeFcn(hObject, eventdata, handles)
 %	NewValue: handle of the currently selected object
 % handles    structure with handles and user data (see GUIDATA)
 global HEIGHT
-global LAST_HEIGHT
 switch get(eventdata.NewValue,'Tag') % Get Tag of selected object.
     case 'rcar'
         HEIGHT = 5
     case 'car'
-        HEIGHT = 20
+        % Code for when radiobutton2 is selected.
     case 'human'
-        HEIGHT = 50
+        % Code for when togglebutton1 is selected.
     case 'plane'
-        HEIGHT = 255
+        % Code for when togglebutton2 is selected.
+    % Continue with more cases as necessary.
     otherwise
-        LAST_HEIGHT = HEIGHT
+        % Code for when there is no match.
 end
