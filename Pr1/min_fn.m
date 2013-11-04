@@ -21,11 +21,12 @@ function i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget)
  end;%Get all nodes that are on the list open
  if flag == 1 % one of the successors is the goal node so send this node
      i_min=goal_index;
- end
- %Send the index of the smallest node
- if size(temp_array ~= 0)
-  [min_fn,temp_min]=min(temp_array(:,8));%Index of the smallest node in temp array
-  i_min=temp_array(temp_min,9);%Index of the smallest node in the OPEN array
  else
-     i_min=-1;%The temp_array is empty i.e No more paths are available.
- end;
+ %Send the index of the smallest node
+    if size(temp_array ~= 0)
+    [min_fn,temp_min]=min(temp_array(:,8));%Index of the smallest node in temp array
+    i_min=temp_array(temp_min,9);%Index of the smallest node in the OPEN array
+    else
+        i_min=-1;%The temp_array is empty i.e No more paths are available.
+    end;
+ end

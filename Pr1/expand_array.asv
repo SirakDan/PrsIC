@@ -30,8 +30,7 @@ function exp_array=expand_array(node_x,node_y,hn,xTarget,yTarget,CLOSED,MAX_X,MA
                             flag=0;
                         end;
                     end;%End of for loop to check if a successor is on closed list.
-                    if (flag == 1 && (abs(mapa(s_x, s_y)- mapa(node_x, node_y)) <= HEIGHT))
-                        last_dist = tmp_dist;
+                    if (flag == 1 && (abs(mapa(s_x, s_y)- mapa(node_x, node_y)) < HEIGHT) && last_dist > tmp_dist)
                         exp_array(exp_count,1) = s_x;
                         exp_array(exp_count,2) = s_y;
                         exp_array(exp_count,3) = hn+distance(node_x,node_y,s_x,s_y);%cost of travelling to node
