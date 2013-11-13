@@ -22,7 +22,7 @@ function varargout = mainGUI(varargin)
 
 % Edit the above text to modify the response to help mainGUI
 
-% Last Modified by GUIDE v2.5 08-Nov-2013 12:49:04
+% Last Modified by GUIDE v2.5 12-Nov-2013 12:29:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,11 +60,13 @@ global MAP;
 global cost;
 global img;
 global HEIGHT;
+global riskMap;
 HEIGHT = 5;
 MAX_X=10;
 MAX_Y=10;
 %Objects in each coordinate
 MAP=2*(ones(MAX_X,MAX_Y));
+riskMap=zeros(MAX_X,MAX_Y);
 MAX_VAL = 10;
 img = zeros(MAX_X,MAX_Y);
 % Obtain Obstacle, Target and Robot Position
@@ -590,3 +592,10 @@ switch get(eventdata.NewValue,'Tag') % Get Tag of selected object.
     otherwise
         LAST_HEIGHT = HEIGHT;
 end
+
+
+% --- Executes on button press in risks.
+function risks_Callback(hObject, eventdata, handles)
+% hObject    handle to risks (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
