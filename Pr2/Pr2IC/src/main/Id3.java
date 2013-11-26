@@ -11,5 +11,11 @@ package main;
  * @author DanSirak
  */
 public class Id3 {
+    private String archEj;
+    private String archAt;
     
+    
+    public Id3(String ArchivoEjemplos, String ArchivoAtributos) {
+        
+    }
 }
