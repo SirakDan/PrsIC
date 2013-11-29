@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Id3 {
     private ArrayList<String> listEjemplos;
-    private ArrayList<String<>> listAtributos;
+    private ArrayList<String> listAtributos;
     
     public Id3() {
 	this.listEjemplos = new ArrayList();
