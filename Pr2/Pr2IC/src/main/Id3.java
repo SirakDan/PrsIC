@@ -6,16 +6,22 @@
 
 package main;
 
+import java.util.ArrayList;
 /**
  *
  * @author DanSirak
  */
 public class Id3 {
-    private String archEj;
-    private String archAt;
+    private ArrayList<String> listEjemplos;
+    private ArrayList<String<>> listAtributos;
     
-    
+    public Id3() {
+	this.listEjemplos = new ArrayList();
+	this.listAtributos = new ArrayList();
+    }
+
     public Id3(String ArchivoEjemplos, String ArchivoAtributos) {
         
     }
+
 }
