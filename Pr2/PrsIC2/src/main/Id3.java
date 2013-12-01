@@ -12,10 +12,17 @@ import java.util.ArrayList;
  * @author DanSirak
  */
 public class Id3 {
+    private class tabla {
+        private Object[][] data;
+        private int I;
+        private int J;
+        
+    }
     private ArrayList<String> listEjemplos;
     private ArrayList<String> listAtributos;
     private double p;
     private double n;
+    
     
     public Id3() {
 	this.listEjemplos = new ArrayList();
@@ -82,4 +89,10 @@ public class Id3 {
         
         return arbol;
     }
+<<<<<<< HEAD
+=======
+    
+    
+    
+>>>>>>> e049ba1c35c7dbff853761d2b7f556b6a96a33c7
 }
