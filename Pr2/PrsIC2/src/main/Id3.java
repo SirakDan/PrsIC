@@ -12,6 +12,10 @@ import java.util.ArrayList;
  * @author DanSirak
  */
 public class Id3 {
+    
+    
+    
+
     public class Nodo {
 
             private String nombre;
@@ -23,7 +27,7 @@ public class Id3 {
                 this.nombre = "";
                 this.hijos = new ArrayList();
             }
-
+            
             public Nodo(String atributo) {
                 this.nombre = atributo;
                 this.hijos = new ArrayList();
@@ -99,19 +103,44 @@ public class Id3 {
             }
         }
     }
-
-    private ArrayList<String> listEjemplos;
-    private ArrayList<String> listAtributos;
+    private class Tabla {
+        public String[][] tabla;
+        //private boolean[][] blocked;
+        public boolean[] fil;
+        public boolean[] col;
+        public int height;
+        public int width;
+        
+        public Tabla() {
+            super();
+        }
+        
+        public Tabla(int height, int width) {
+            this.height = height;
+            this.width = width;
+            this.fil = new boolean[height];
+            this.col = new boolean[width];
+            this.tabla = new String[height][width];
+        }
+    }
+    
+    //private ArrayList<String> listEjemplos;
+    //private ArrayList<String> listAtributos;
     private Id3Data id3data;
-
+    private Tabla tabla;
     public Id3() {
-        this.listEjemplos = new ArrayList();
-        this.listAtributos = new ArrayList();
+        tabla = new Tabla();
     }
 
     public Id3(ArrayList<String> listEjemplos, ArrayList<String> listAtributos) {
-        this.listAtributos = listAtributos;
-        this.listEjemplos = listEjemplos;
+        int height = listEjemplos.size() + 1;
+        int width = listAtributos.size();
+        tabla = new Tabla(height, width);
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                tabla.tabla[0][j] = listAtributos.get(j);
+            }
+        }
     }
 
     /**
@@ -200,17 +229,7 @@ public class Id3 {
         boolean encontrado = false;
         int j = 0;
         for (int i = 0; i < ejemplos.size(); i++) {
-            frase = ejemplos.get(i).split(",");
-            for (int k = 0; k < frase.length; k++) {
-                if (!frase[k].equalsIgnoreCase(valor) && k < frase.length - 1) {
-                    recon += frase[k] + ",";
-                } else if (!frase[k].equalsIgnoreCase(valor) && k == frase.length - 1) {
-                    recon += frase[k];
-                }
-            }
-            retorno.add(recon);
-            System.out.println(recon);
-            recon = "";
+            if (ejemplos.get(i).contains(valor)) retorno.add(ejemplos.get(i));
         }
 
         return retorno;
@@ -240,20 +259,22 @@ public class Id3 {
         if (listEjemplos.isEmpty()) {
             return null;
         }
-        if (isItPlusOrMinus(listEjemplos) == 1) {
+        int ret = isItPlusOrMinus(listEjemplos);
+        if (ret == 1) {
             return new Nodo("+");
-        } else if (isItPlusOrMinus(listEjemplos) == -1) {
+        } else if (ret == -1) {
             return new Nodo("-");
         } else {
             if (listAtributos.isEmpty()) {
                 return null;
             }
-            id3data = minMerito(listEjemplos, listAtributos);
+            Id3Data temp = minMerito(listEjemplos, listAtributos);
             Nodo tmp = new Nodo();
-            for (int i = 0; i < id3data.nombre.size(); i++) {
-                tmp.hijos.add(execRec(ejemplosRestantes(id3data.nombre.get(i), listEjemplos),
-                        atributosRestantes(id3data.atributo, listAtributos)
-                        , id3data.atributo));
+            for (int i = 0; i < 1; i++) {
+                tmp.hijos.add(execRec(ejemplosRestantes(temp.nombre.get(i), listEjemplos),
+                       atributosRestantes(temp.atributo, listAtributos)
+                     , temp.atributo));
+                
             }
             return tmp;
         }
