@@ -12,33 +12,31 @@ import java.util.ArrayList;
  * @author DanSirak
  */
 public class Id3 {
-    
-    
-    
 
     public class Nodo {
 
-            private String nombre;
-            private String vertice;
-            private ArrayList<Nodo> hijos;
+        private String nombre;
+        private String vertice;
+        private ArrayList<Nodo> hijos;
 
-            //Constructors
-            public Nodo() {
-                this.nombre = "";
-                this.hijos = new ArrayList();
-            }
-            
-            public Nodo(String atributo) {
-                this.nombre = atributo;
-                this.hijos = new ArrayList();
-            }
-
-            public Nodo(String atributo, ArrayList<Nodo> nodos) {
-                this.nombre = atributo;
-                this.hijos = nodos;
-            }
-
+        //Constructors
+        public Nodo() {
+            this.nombre = "";
+            this.hijos = new ArrayList();
         }
+
+        public Nodo(String atributo) {
+            this.nombre = atributo;
+            this.hijos = new ArrayList();
+        }
+
+        public Nodo(String atributo, ArrayList<Nodo> nodos) {
+            this.nombre = atributo;
+            this.hijos = nodos;
+        }
+
+    }
+
     private class Id3Data {
 
         public String atributo;
@@ -49,8 +47,6 @@ public class Id3 {
         public double N;
         public double[] r;
         public double merito;
-
-        
 
         public Id3Data(int size) {
             this.nombre = new ArrayList();
@@ -103,18 +99,20 @@ public class Id3 {
             }
         }
     }
+
     private class Tabla {
+
         public String[][] tabla;
         //private boolean[][] blocked;
         public boolean[] fil;
         public boolean[] col;
         public int height;
         public int width;
-        
+
         public Tabla() {
             super();
         }
-        
+
         public Tabla(int height, int width) {
             this.height = height;
             this.width = width;
@@ -122,12 +120,25 @@ public class Id3 {
             this.col = new boolean[width];
             this.tabla = new String[height][width];
         }
+        
+        public boolean empty() {
+            int contador = 0;
+            for(int i = 0; i < width; i++) if (col[i]) contador++; 
+            if (contador == width - 1) return true;
+            else {
+                contador = 0;
+                for (int i = 0; i < height; i++) if (fil[i]) contador++;
+                if (contador == height - 1) return true;
+            }
+            return false;
+        }
     }
-    
+
     //private ArrayList<String> listEjemplos;
     //private ArrayList<String> listAtributos;
     private Id3Data id3data;
     private Tabla tabla;
+
     public Id3() {
         tabla = new Tabla();
     }
@@ -136,9 +147,15 @@ public class Id3 {
         int height = listEjemplos.size() + 1;
         int width = listAtributos.size();
         tabla = new Tabla(height, width);
+        String[] frase;
         for (int i = 0; i < height; i++) {
+            frase = listEjemplos.get(i).split(",");
             for (int j = 0; j < width; j++) {
-                tabla.tabla[0][j] = listAtributos.get(j);
+                if (i == 0) {
+                    tabla.tabla[i][j] = listAtributos.get(j);
+                } else {
+                    tabla.tabla[i][j] = frase[j];
+                }
             }
         }
     }
@@ -150,17 +167,15 @@ public class Id3 {
      * @param listAtributos
      * @return
      */
-    public int isItPlusOrMinus(ArrayList<String> listEjemplos) {
-        String frase;
-        String[] split;
+    public int isItPlusOrMinus(Tabla tabla) {
         int plus = 0, minus = 0, retorno;
-        for (int i = 0; i < listEjemplos.size(); i++) {
-            frase = listEjemplos.get(i);
-            split = frase.split(",");
-            if (split[split.length - 1].equalsIgnoreCase("si")) {
-                plus++;
-            } else if (split[split.length - 1].equalsIgnoreCase("no")) {
-                minus++;
+        for (int i = 0; i < tabla.height; i++) {
+            if (!tabla.fil[i]) {
+                if (tabla.tabla[i][tabla.width - 1].equalsIgnoreCase("si")) {
+                    plus++;
+                } else if (tabla.tabla[i][tabla.width - 1].equalsIgnoreCase("no")) {
+                    minus++;
+                }
             }
         }
         if (plus != 0 && minus == 0) {
@@ -180,81 +195,81 @@ public class Id3 {
      * @param n: Porcentaje de ejemplos negativos
      * @return
      */
-    public Id3Data minMerito(ArrayList<String> listEjemplos, ArrayList<String> listAtributos) {
+    public Id3Data minMerito(Tabla tabla) {
         double tmpMerito, minMerito = 10000;
         String candidato = "";
-        int colocados, pos;
+        int pos;
         Id3Data ejemplos;
-        String[] frase;
-        for (int i = 0; i < listAtributos.size() - 1; i++) {
-            ejemplos = new Id3Data(listEjemplos.size());
-            ejemplos.N = listEjemplos.size();
+        for (int i = 0; i < tabla.width - 1; i++) {
+            ejemplos = new Id3Data(tabla.height - 1);
+            ejemplos.N = tabla.height - 1;
             //Miramos a ver cuántos ejemplos diferentes de cada atributo hay
-            for (int j = 0; j < listEjemplos.size(); j++) {
-                frase = listEjemplos.get(j).split(",");
-                pos = ejemplos.isThere(frase[i]);
-                if (pos == -1) {
-                    pos = ejemplos.nombre.size();
-                    ejemplos.nombre.add(frase[i]);
-                    ejemplos.cuenta[pos] = 1;
-                    ejemplos.p[pos] = 0;
-                    ejemplos.n[pos] = 0;
-                } else {
-                    ejemplos.cuenta[pos]++;
+            if (!tabla.col[i]) {
+                for (int j = 1; j < tabla.height; j++) {
+                    if (!tabla.fil[j]) {
+                        pos = ejemplos.isThere(tabla.tabla[j][i]);
+                        if (pos == -1) {
+                            pos = ejemplos.nombre.size();
+                            ejemplos.nombre.add(tabla.tabla[j][i]);
+                            ejemplos.cuenta[pos] = 1;
+                            ejemplos.p[pos] = 0;
+                            ejemplos.n[pos] = 0;
+                        } else {
+                            ejemplos.cuenta[pos]++;
+                        }
+                        if (tabla.tabla[j][tabla.width - 1].equalsIgnoreCase("si")) {
+                            ejemplos.p[pos]++;
+                        } else {
+                            ejemplos.n[pos]++;
+                        }
+                    }
                 }
-                if (frase[listAtributos.size() - 1].equalsIgnoreCase("si")) {
-                    ejemplos.p[pos]++;
-                } else {
-                    ejemplos.n[pos]++;
+                //Calculamos las p, n, a, r...
+                ejemplos.ajusta();
+                tmpMerito = ejemplos.merito;
+                if (tmpMerito < minMerito) {
+                    minMerito = tmpMerito;
+                    candidato = tabla.tabla[0][i];
+                    System.out.println(candidato);
+                    id3data = ejemplos;
+                    id3data.atributo = candidato;
                 }
-            }
-            //Calculamos las p, n, a, r...
-            ejemplos.ajusta();
-            tmpMerito = ejemplos.merito;
-            if (tmpMerito < minMerito) {
-                minMerito = tmpMerito;
-                candidato = listAtributos.get(i);
-                System.out.println(candidato);
-                id3data = ejemplos;
-                id3data.atributo = candidato;
             }
         }
         return id3data;
     }
 
-    public ArrayList<String> ejemplosRestantes(String valor, ArrayList<String> ejemplos) {
-        ArrayList<String> retorno = new ArrayList();
-        String[] frase;
-        String recon = "";
-        boolean encontrado = false;
-        int j = 0;
-        for (int i = 0; i < ejemplos.size(); i++) {
-            if (ejemplos.get(i).contains(valor)) retorno.add(ejemplos.get(i));
-        }
+    public boolean[] ejemplosRestantes(String atributo, String valor, Tabla tabla) {
+        int pos = -1;
+        boolean[] aux = tabla.fil;
+        for (int i = 0; i < tabla.width; i++) if (!tabla.col[i] && tabla.tabla[0][i].equalsIgnoreCase(atributo)) pos = i;
+        if (pos != -1)
+            for (int i = 0; i < tabla.height; i++) {
+                if (!tabla.fil[i] && !tabla.tabla[i][pos].equalsIgnoreCase(valor)) {
+                    aux[i] = true;
+                }
+            }
 
-        return retorno;
+        return aux;
     }
 
-    public ArrayList<String> atributosRestantes(String valor, ArrayList<String> atributos) {
-        ArrayList<String> retorno = atributos;
-        int pos = -1;
-        for (int i = 0; i < atributos.size(); i++) {
-            if (atributos.get(i).equalsIgnoreCase(valor)) {
-                pos = i;
+    public boolean[] atributosRestantes(String valor, Tabla tabla) {
+        boolean[] aux = tabla.col;
+        for (int i = 0; i < tabla.width; i++) {
+            if (!tabla.fil[i] && tabla.tabla[0][i].equalsIgnoreCase(valor)) {
+                aux[i] = true;
             }
         }
-        if (pos != -1) {
-            retorno.remove(pos);
-        }
-        return retorno;
-    }
 
+        return aux;
+    }
+    // TODO: Cambiar desde aquí
     public void exec(ArrayList<String> listEjemplos, ArrayList<String> listAtributos) {
         Nodo arbol = new Nodo();
         arbol = execRec(listEjemplos, listAtributos, "");
         System.out.println("Done!");
     }
-    
+
     public Nodo execRec(ArrayList<String> listEjemplos, ArrayList<String> listAtributos, String atributo) {
         if (listEjemplos.isEmpty()) {
             return null;
@@ -272,9 +287,8 @@ public class Id3 {
             Nodo tmp = new Nodo();
             for (int i = 0; i < 1; i++) {
                 tmp.hijos.add(execRec(ejemplosRestantes(temp.nombre.get(i), listEjemplos),
-                       atributosRestantes(temp.atributo, listAtributos)
-                     , temp.atributo));
-                
+                        atributosRestantes(temp.atributo, listAtributos), temp.atributo));
+
             }
             return tmp;
         }
