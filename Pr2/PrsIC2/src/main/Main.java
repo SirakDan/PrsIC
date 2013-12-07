@@ -32,18 +32,24 @@ public class Main {
         ArrayList<String> ejemploList = new ArrayList();
         String fraseCompleta;
         String[] frase;
+        FileReader fr1 = null;
+        BufferedReader br1 = null;
+        FileReader fr2 = null;
+        BufferedReader br2 = null;
         try {
-            FileReader fr1 = new FileReader(atributoFile);
-            BufferedReader br1 = new BufferedReader(fr1);
+            fr1 = new FileReader(atributoFile);
+            br1 = new BufferedReader(fr1);
             fraseCompleta = br1.readLine();
             frase = fraseCompleta.split(",");
             for (int i = 0; i < frase.length; i++) atributoList.add(frase[i]);
-            fr1.close();
-            FileReader fr2 = new FileReader(ejemploFile);
-            BufferedReader br2 = new BufferedReader(fr2);
+            
+            //br1.close();
+            fr2 = new FileReader(ejemploFile);
+            br2 = new BufferedReader(fr2);
             while((fraseCompleta = br2.readLine())!= null) {
                 ejemploList.add(fraseCompleta);
             }
+            //br2.close();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -51,6 +57,13 @@ public class Main {
         } finally {
             Id3 id3 = new Id3(ejemploList, atributoList);
             id3.exec(ejemploList, atributoList);
+            try {
+                fr1.close();
+                fr2.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
 
     }

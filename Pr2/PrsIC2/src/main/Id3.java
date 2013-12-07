@@ -120,7 +120,10 @@ public class Id3 {
             this.col = new boolean[width];
             this.tabla = new String[height][width];
         }
-        
+        public void clean() {
+            col = new boolean[width];
+            fil = new boolean[height];
+        }
         public boolean empty() {
             int contador = 0;
             for(int i = 0; i < width; i++) if (col[i]) contador++; 
@@ -148,7 +151,7 @@ public class Id3 {
         int width = listAtributos.size();
         tabla = new Tabla(height, width);
         String[] frase;
-        for (int i = 0; i < height; i++) {
+        for (int i = 0; i < height-1; i++) {
             frase = listEjemplos.get(i).split(",");
             for (int j = 0; j < width; j++) {
                 if (i == 0) {
@@ -169,7 +172,7 @@ public class Id3 {
      */
     public int isItPlusOrMinus(Tabla tabla) {
         int plus = 0, minus = 0, retorno;
-        for (int i = 0; i < tabla.height; i++) {
+        for (int i = 1; i < tabla.height; i++) {
             if (!tabla.fil[i]) {
                 if (tabla.tabla[i][tabla.width - 1].equalsIgnoreCase("si")) {
                     plus++;
@@ -230,7 +233,6 @@ public class Id3 {
                 if (tmpMerito < minMerito) {
                     minMerito = tmpMerito;
                     candidato = tabla.tabla[0][i];
-                    System.out.println(candidato);
                     id3data = ejemplos;
                     id3data.atributo = candidato;
                 }
@@ -242,9 +244,9 @@ public class Id3 {
     public boolean[] ejemplosRestantes(String atributo, String valor, Tabla tabla) {
         int pos = -1;
         boolean[] aux = tabla.fil;
-        for (int i = 0; i < tabla.width; i++) if (!tabla.col[i] && tabla.tabla[0][i].equalsIgnoreCase(atributo)) pos = i;
+        for (int i = 0; i < tabla.width; i++) if (tabla.tabla[0][i].equalsIgnoreCase(atributo)) pos = i;
         if (pos != -1)
-            for (int i = 0; i < tabla.height; i++) {
+            for (int i = 1; i < tabla.height; i++) {
                 if (!tabla.fil[i] && !tabla.tabla[i][pos].equalsIgnoreCase(valor)) {
                     aux[i] = true;
                 }
@@ -256,7 +258,7 @@ public class Id3 {
     public boolean[] atributosRestantes(String valor, Tabla tabla) {
         boolean[] aux = tabla.col;
         for (int i = 0; i < tabla.width; i++) {
-            if (!tabla.fil[i] && tabla.tabla[0][i].equalsIgnoreCase(valor)) {
+            if (!tabla.col[i] && tabla.tabla[0][i].equalsIgnoreCase(valor)) {
                 aux[i] = true;
             }
         }
@@ -266,29 +268,54 @@ public class Id3 {
     // TODO: Cambiar desde aquí
     public void exec(ArrayList<String> listEjemplos, ArrayList<String> listAtributos) {
         Nodo arbol = new Nodo();
-        arbol = execRec(listEjemplos, listAtributos, "");
+        Tabla tabla = new Tabla(listEjemplos.size()+1, listAtributos.size());
+        String[] frase = {"",""};
+        int j;
+        for (int i = 0; i < tabla.height; i++) 
+            for (j = 0; j < tabla.width; j++) {
+                if (i == 0) {
+                    //Se setean los atributos:
+                    tabla.tabla[i][j] = listAtributos.get(j);
+                } else {
+                    //Se setean los ejemplos:
+                    if (j == 0) frase = listEjemplos.get(i-1).split(",");
+                    tabla.tabla[i][j] = frase[j];
+                }
+            }
+        arbol = execRec(tabla, "");
         System.out.println("Done!");
     }
 
-    public Nodo execRec(ArrayList<String> listEjemplos, ArrayList<String> listAtributos, String atributo) {
-        if (listEjemplos.isEmpty()) {
+    public Nodo execRec(Tabla tabla, String atributo) {
+        if (tabla.empty()) {
             return null;
         }
-        int ret = isItPlusOrMinus(listEjemplos);
+        int ret = isItPlusOrMinus(tabla);
         if (ret == 1) {
-            return new Nodo("+");
+            Nodo tmp = new Nodo("+");
+            tmp.nombre=atributo;
+            return tmp;
         } else if (ret == -1) {
-            return new Nodo("-");
+            Nodo tmp = new Nodo("-");
+            tmp.nombre=atributo;
+            return tmp;
         } else {
-            if (listAtributos.isEmpty()) {
+            if (tabla.empty()) {
                 return null;
             }
-            Id3Data temp = minMerito(listEjemplos, listAtributos);
+            Id3Data data = minMerito(tabla);
             Nodo tmp = new Nodo();
-            for (int i = 0; i < 1; i++) {
-                tmp.hijos.add(execRec(ejemplosRestantes(temp.nombre.get(i), listEjemplos),
-                        atributosRestantes(temp.atributo, listAtributos), temp.atributo));
-
+            tmp.nombre=data.atributo;
+            Tabla aux = tabla;
+            boolean[] fil, col;
+            
+            for (int i = 0; i < data.nombre.size(); i++) {
+                aux.clean();
+                col = atributosRestantes(data.atributo, tabla);
+                fil = ejemplosRestantes(data.atributo, data.nombre.get(i), tabla); 
+                aux.fil = fil;
+                aux.col = col;
+                tmp.hijos.add(execRec(aux, data.nombre.get(i)));
             }
             return tmp;
         }

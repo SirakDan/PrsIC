@@ -1,5 +1,5 @@
-alto,mucho,no,si,+
-medio,poco,no,no,-
-bajo,mucho,si,no,+
-alto,medio,no,no,-
-medio,medio,si,si,+
+alto,mucho,no,si,si
+medio,poco,no,no,no
+bajo,mucho,si,no,si
+alto,medio,no,no,no
+medio,medio,si,si,si
