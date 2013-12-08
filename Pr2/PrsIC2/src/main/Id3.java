@@ -6,8 +6,7 @@
 package main;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -15,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class Id3 {
 
-    public class Nodo {
+    private class Nodo {
 
         private String nombre;
         private String vertice;
@@ -184,11 +183,10 @@ public class Id3 {
     /**
      * Devuelve 1 si todos son "+", -1 si todos sin "-" y 0 si hay de ambos.
      *
-     * @param listEjemplos
-     * @param listAtributos
+     * @param tabla
      * @return
      */
-    public int isItPlusOrMinus(Tabla tabla) {
+    private int isItPlusOrMinus(Tabla tabla) {
         int plus = 0, minus = 0, retorno;
         for (int i = 1; i < tabla.height; i++) {
             if (!tabla.fil[i]) {
@@ -212,13 +210,12 @@ public class Id3 {
     /**
      * Devuelve la cantidad de información de un conjunto de datos.
      *
-     * @param p: Porcentaje de ejemplos positivos
-     * @param n: Porcentaje de ejemplos negativos
+     * @param tabla
      * @return
      */
-    public Id3Data minMerito(Tabla tabla) {
+    private Id3Data minMerito(Tabla tabla) {
         double tmpMerito, minMerito = 10000;
-        String candidato = "";
+        String candidato;
         int pos;
         Id3Data ejemplos;
         for (int i = 0; i < tabla.width - 1; i++) {
@@ -259,7 +256,7 @@ public class Id3 {
         return id3data;
     }
 
-    public boolean[] ejemplosRestantes(String atributo, String valor, Tabla tabla) {
+    private boolean[] ejemplosRestantes(String atributo, String valor, Tabla tabla) {
         int pos = -1;
         boolean[] aux = new boolean[tabla.height];
         System.arraycopy(tabla.fil, 0, aux, 0, tabla.height);
@@ -274,7 +271,7 @@ public class Id3 {
         return aux;
     }
 
-    public boolean[] atributosRestantes(String valor, Tabla tabla) {
+    private boolean[] atributosRestantes(String valor, Tabla tabla) {
         boolean[] aux = new boolean[tabla.width];
         System.arraycopy(tabla.col, 0, aux, 0, tabla.width);
         for (int i = 0; i < tabla.width; i++) {
@@ -288,25 +285,25 @@ public class Id3 {
     // TODO: Cambiar desde aquí
     public void exec(ArrayList<String> listEjemplos, ArrayList<String> listAtributos) {
         Nodo arbol = new Nodo();
-        Tabla tabla = new Tabla(listEjemplos.size()+1, listAtributos.size());
+        Tabla table = new Tabla(listEjemplos.size()+1, listAtributos.size());
         String[] frase = {"",""};
         int j;
-        for (int i = 0; i < tabla.height; i++) 
-            for (j = 0; j < tabla.width; j++) {
+        for (int i = 0; i < table.height; i++) 
+            for (j = 0; j < table.width; j++) {
                 if (i == 0) {
                     //Se setean los atributos:
-                    tabla.tabla[i][j] = listAtributos.get(j);
+                    table.tabla[i][j] = listAtributos.get(j);
                 } else {
                     //Se setean los ejemplos:
                     if (j == 0) frase = listEjemplos.get(i-1).split(",");
-                    tabla.tabla[i][j] = frase[j];
+                    table.tabla[i][j] = frase[j];
                 }
             }
-        arbol = execRec(tabla, "");
+        arbol = execRec(table, "");
         System.out.println("Done!");
     }
 
-    public Nodo execRec(Tabla tabla, String atributo) {
+    private Nodo execRec(Tabla tabla, String atributo) {
         if (tabla.empty()) {
             return null;
         }
@@ -320,13 +317,10 @@ public class Id3 {
             tmp.vertice=atributo;
             return tmp;
         } else {
-            if (tabla.empty()) {
-                return null;
-            }
             Id3Data data = minMerito(tabla);
             Nodo tmp = new Nodo(data.atributo);
             tmp.vertice=atributo;
-            Tabla aux = new Tabla();
+            Tabla aux;
             boolean[] fil, col;
             for (int i = 0; i < data.nombre.size(); i++) {
                 aux = tabla.copia();
