@@ -6,6 +6,8 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -100,7 +102,7 @@ public class Id3 {
         }
     }
 
-    private class Tabla {
+    private class Tabla{
 
         public String[][] tabla;
         //private boolean[][] blocked;
@@ -119,6 +121,22 @@ public class Id3 {
             this.fil = new boolean[height];
             this.col = new boolean[width];
             this.tabla = new String[height][width];
+        }
+
+        public Tabla copia() {
+            Tabla retorno = new Tabla(this.height, this.width);
+            retorno.height = this.height;
+            retorno.width = this.width;
+            System.arraycopy(fil, 0, retorno.fil, 0, this.height);
+            System.arraycopy(col, 0, retorno.col, 0, this.width);
+            retorno.tabla = new String[height][width];
+            int j;
+            for (int i = 0; i < retorno.height; i++) 
+                for (j = 0; j < retorno.width; j++) {
+                    retorno.tabla[i][j] = this.tabla[i][j];
+            }
+            return retorno;
+            
         }
         public void clean() {
             col = new boolean[width];
@@ -243,7 +261,8 @@ public class Id3 {
 
     public boolean[] ejemplosRestantes(String atributo, String valor, Tabla tabla) {
         int pos = -1;
-        boolean[] aux = tabla.fil;
+        boolean[] aux = new boolean[tabla.height];
+        System.arraycopy(tabla.fil, 0, aux, 0, tabla.height);
         for (int i = 0; i < tabla.width; i++) if (tabla.tabla[0][i].equalsIgnoreCase(atributo)) pos = i;
         if (pos != -1)
             for (int i = 1; i < tabla.height; i++) {
@@ -256,7 +275,8 @@ public class Id3 {
     }
 
     public boolean[] atributosRestantes(String valor, Tabla tabla) {
-        boolean[] aux = tabla.col;
+        boolean[] aux = new boolean[tabla.width];
+        System.arraycopy(tabla.col, 0, aux, 0, tabla.width);
         for (int i = 0; i < tabla.width; i++) {
             if (!tabla.col[i] && tabla.tabla[0][i].equalsIgnoreCase(valor)) {
                 aux[i] = true;
@@ -293,24 +313,23 @@ public class Id3 {
         int ret = isItPlusOrMinus(tabla);
         if (ret == 1) {
             Nodo tmp = new Nodo("+");
-            tmp.nombre=atributo;
+            tmp.vertice=atributo;
             return tmp;
         } else if (ret == -1) {
             Nodo tmp = new Nodo("-");
-            tmp.nombre=atributo;
+            tmp.vertice=atributo;
             return tmp;
         } else {
             if (tabla.empty()) {
                 return null;
             }
             Id3Data data = minMerito(tabla);
-            Nodo tmp = new Nodo();
-            tmp.nombre=data.atributo;
-            Tabla aux = tabla;
+            Nodo tmp = new Nodo(data.atributo);
+            tmp.vertice=atributo;
+            Tabla aux = new Tabla();
             boolean[] fil, col;
-            
             for (int i = 0; i < data.nombre.size(); i++) {
-                aux.clean();
+                aux = tabla.copia();
                 col = atributosRestantes(data.atributo, tabla);
                 fil = ejemplosRestantes(data.atributo, data.nombre.get(i), tabla); 
                 aux.fil = fil;

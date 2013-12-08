@@ -25,8 +25,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args){
-        File ejemploFile= new File("ejemplo1.txt");
-        File atributoFile = new File("juego1.txt");
+        File ejemploFile= new File("Juego.txt");
+        File atributoFile = new File("AtributosJuego.txt");
         
         ArrayList<String> atributoList = new ArrayList();
         ArrayList<String> ejemploList = new ArrayList();
