@@ -5,8 +5,10 @@
  */
 package main;
 
+import java.awt.Graphics;
 import java.util.ArrayList;
-
+import javax.swing.JPanel;
+import main.Nodo;
 
 /**
  *
@@ -14,30 +16,11 @@ import java.util.ArrayList;
  */
 public class Id3 {
 
-    private class Nodo {
-
-        private String nombre;
-        private String vertice;
-        private ArrayList<Nodo> hijos;
-
-        //Constructors
-        public Nodo() {
-            this.nombre = "";
-            this.hijos = new ArrayList();
-        }
-
-        public Nodo(String atributo) {
-            this.nombre = atributo;
-            this.hijos = new ArrayList();
-        }
-
-        public Nodo(String atributo, ArrayList<Nodo> nodos) {
-            this.nombre = atributo;
-            this.hijos = nodos;
-        }
-
-    }
-
+    private Nodo origen;
+    private int profundidad;
+    private int numeroHojas;
+    private JPanel panel;
+    
     private class Id3Data {
 
         public String atributo;
@@ -161,6 +144,8 @@ public class Id3 {
 
     public Id3() {
         tabla = new Tabla();
+        this.numeroHojas = 0;
+        this.profundidad = 0;
     }
 
     public Id3(ArrayList<String> listEjemplos, ArrayList<String> listAtributos) {
@@ -178,6 +163,8 @@ public class Id3 {
                 }
             }
         }
+        this.numeroHojas = 0;
+        this.profundidad = 0;
     }
 
     /**
@@ -299,27 +286,34 @@ public class Id3 {
                     table.tabla[i][j] = frase[j];
                 }
             }
-        arbol = execRec(table, "");
+        arbol = execRec(table, "",0);
+        origen = arbol;
         System.out.println("Done!");
+        //TODO: Añadir la ventana
     }
 
-    private Nodo execRec(Tabla tabla, String atributo) {
+    private Nodo execRec(Tabla tabla, String atributo, int relProf) {
         if (tabla.empty()) {
             return null;
         }
         int ret = isItPlusOrMinus(tabla);
+        relProf++;
+        if (relProf > profundidad) profundidad = relProf;
         if (ret == 1) {
             Nodo tmp = new Nodo("+");
-            tmp.vertice=atributo;
+            tmp.setVertice(atributo);
+            numeroHojas++;
             return tmp;
         } else if (ret == -1) {
             Nodo tmp = new Nodo("-");
-            tmp.vertice=atributo;
+            tmp.setVertice(atributo);
+            numeroHojas++;
             return tmp;
         } else {
+            
             Id3Data data = minMerito(tabla);
             Nodo tmp = new Nodo(data.atributo);
-            tmp.vertice=atributo;
+            tmp.setVertice(atributo);
             Tabla aux;
             boolean[] fil, col;
             for (int i = 0; i < data.nombre.size(); i++) {
@@ -328,10 +322,22 @@ public class Id3 {
                 fil = ejemplosRestantes(data.atributo, data.nombre.get(i), tabla); 
                 aux.fil = fil;
                 aux.col = col;
-                tmp.hijos.add(execRec(aux, data.nombre.get(i)));
+                tmp.addHijo(execRec(aux, data.nombre.get(i),relProf));
+                
             }
             return tmp;
         }
+        
     }
-
+    public Nodo getNodoOrigen(){
+        return this.origen;
+    }
+    
+    public void dibujaArbol() {
+        Graphics g = panel.getGraphics();
+    }
+    
+    private void dibujaArbolRec(Graphics g, int nivel, Nodo nodo){
+        
+    }
 }
