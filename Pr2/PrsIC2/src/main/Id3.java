@@ -5,10 +5,10 @@
  */
 package main;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import javax.swing.JPanel;
-import main.Nodo;
 
 /**
  *
@@ -19,7 +19,7 @@ public class Id3 {
     private Nodo origen;
     private int profundidad;
     private int numeroHojas;
-    private JPanel panel;
+    private int hijosDibujados;
     
     private class Id3Data {
 
@@ -146,6 +146,7 @@ public class Id3 {
         tabla = new Tabla();
         this.numeroHojas = 0;
         this.profundidad = 0;
+        this.hijosDibujados = 0;
     }
 
     public Id3(ArrayList<String> listEjemplos, ArrayList<String> listAtributos) {
@@ -165,6 +166,7 @@ public class Id3 {
         }
         this.numeroHojas = 0;
         this.profundidad = 0;
+        this.hijosDibujados = 0;
     }
 
     /**
@@ -271,7 +273,7 @@ public class Id3 {
     }
     // TODO: Cambiar desde aquí
     public void exec(ArrayList<String> listEjemplos, ArrayList<String> listAtributos) {
-        Nodo arbol = new Nodo();
+        Nodo arbol;
         Tabla table = new Tabla(listEjemplos.size()+1, listAtributos.size());
         String[] frase = {"",""};
         int j;
@@ -332,12 +334,67 @@ public class Id3 {
     public Nodo getNodoOrigen(){
         return this.origen;
     }
-    
-    public void dibujaArbol() {
-        Graphics g = panel.getGraphics();
+    public int getNodosHojas(){
+        return this.numeroHojas;
+    }
+    public int getProfundidad(){
+        return this.profundidad;
     }
     
-    private void dibujaArbolRec(Graphics g, int nivel, Nodo nodo){
+    public void dibujaArbol(JPanel panel) {
+        Graphics g = panel.getGraphics();
+        this.hijosDibujados=1;
+        dibujaArbolRec(g, origen, panel.getHeight(), panel.getWidth(), 1);
+    }
+    private class Posicion{
+        private int x;
+        private int y;
+        private int anchura;
+        private int altura;
+        //private int hijosDibujados;
+        public Posicion() {
+            
+        }
+    }
+    private Posicion dibujaArbolRec(Graphics g, Nodo nodo, int height, int width, int nivel){
+        if (g==null) return null;
+        //Nodo hoja:
+        //drawRect(int x, int y, int width, int height)
+        int yInit = (height/profundidad)*nivel-(height/profundidad*7);
+        int xInit = (width/numeroHojas)*this.hijosDibujados; 
+        int anchura = (width/numeroHojas)/6;
+        int altura = (height/profundidad)/4;
+        Posicion pos;
+        if (nodo.getHijos().isEmpty()){
+            g.setColor(Color.gray);
+            g.drawRect(xInit, yInit, anchura, altura);
+            g.setColor(Color.black);
+            g.drawString(nodo.getNombre(), (xInit+anchura)/3, (yInit+altura)/3);
+            this.hijosDibujados++;
+            pos = new Posicion();
+            pos.altura=altura;
+            pos.anchura=anchura;
+            pos.x=xInit;
+            pos.y=yInit;
+            return pos;
+        } else {
+            ArrayList<Posicion> posi = new ArrayList();
+            for (Nodo i : nodo.getHijos()) {
+                posi.add(dibujaArbolRec(g, i, height, width, nivel+1));
+            }
+            xInit = posi.get(0).x + posi.get(posi.size()-1).x;
+            g.setColor(Color.gray);
+            g.drawRect(xInit, yInit, anchura, altura);
+            g.setColor(Color.black);
+            g.drawString(nodo.getNombre(), (xInit+anchura)/3, (yInit+altura)/3);
+            pos = new Posicion();
+            pos.altura=altura;
+            pos.anchura=anchura;
+            pos.x=xInit;
+            pos.y=yInit;
+        }
+        //TODO: cambiar este return
+        return pos;
         
     }
 }
