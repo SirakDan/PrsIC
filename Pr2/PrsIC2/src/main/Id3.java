@@ -20,6 +20,7 @@ public class Id3 {
     private int profundidad;
     private int numeroHojas;
     private int hijosDibujados;
+    private ArrayList<String> reglas;
     
     private class Id3Data {
 
@@ -147,6 +148,7 @@ public class Id3 {
         this.numeroHojas = 0;
         this.profundidad = 0;
         this.hijosDibujados = 0;
+        this.reglas = new ArrayList();
     }
 
     public Id3(ArrayList<String> listEjemplos, ArrayList<String> listAtributos) {
@@ -167,6 +169,7 @@ public class Id3 {
         this.numeroHojas = 0;
         this.profundidad = 0;
         this.hijosDibujados = 0;
+        this.reglas = new ArrayList();
     }
 
     /**
@@ -328,6 +331,28 @@ public class Id3 {
                 
             }
             return tmp;
+        }
+        
+    }
+    public ArrayList<String> dameReglas() {
+        dameReglasRec("", origen);
+        return reglas;
+    }
+    
+    public void dameReglasRec(String frase, Nodo arbol) {
+        if(arbol==null) return;
+        if (arbol.getHijos().isEmpty()) {
+            String respuesta = (arbol.getNombre().equalsIgnoreCase("+"))?"si":"no";
+            frase += " " + arbol.getVertice() + ", entonces: " + respuesta;
+            reglas.add(frase);
+        }
+        else {
+            if (arbol.getVertice().equalsIgnoreCase(""))
+                frase += "si " + arbol.getNombre() + " ==";
+            else
+                frase += " " + arbol.getVertice() + " && " + arbol.getNombre() + " == ";
+            for (Nodo i : arbol.getHijos()) 
+                dameReglasRec(frase, i); 
         }
         
     }

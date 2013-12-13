@@ -6,6 +6,7 @@
 
 package main;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,26 +20,17 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 /**
- *
  * @author Test User
  */
 public class mainWindow extends javax.swing.JFrame {
    
-    
-    private class myPanel extends JPanel {
-        @Override
-        public void paintComponent(Graphics g,) {
-            super.paintComponent(g);
-            
-        }
-    }
     
     /**
      * Creates new form mainWindow
      */
     public mainWindow() {
         initComponents();
-        
+        this.resultadoArea.setEditable(false);
     }
 
     /**
@@ -50,26 +42,21 @@ public class mainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelDibujo = new javax.swing.JPanel();
-        generateRules = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         atributosField = new javax.swing.JTextField();
         ejemploField = new javax.swing.JTextField();
         startButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        resultadoArea = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        javax.swing.GroupLayout panelDibujoLayout = new javax.swing.GroupLayout(panelDibujo);
-        panelDibujo.setLayout(panelDibujoLayout);
-        panelDibujoLayout.setHorizontalGroup(
-            panelDibujoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 615, Short.MAX_VALUE)
-        );
-        panelDibujoLayout.setVerticalGroup(
-            panelDibujoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 558, Short.MAX_VALUE)
-        );
-
-        generateRules.setText("Generar reglas");
 
         atributosField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -84,43 +71,49 @@ public class mainWindow extends javax.swing.JFrame {
             }
         });
 
+        resultadoArea.setColumns(20);
+        resultadoArea.setRows(5);
+        jScrollPane2.setViewportView(resultadoArea);
+
+        jLabel1.setText("Atributos");
+
+        jLabel2.setText("Juego");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(713, 713, 713)
-                        .addComponent(generateRules, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+                    .addComponent(atributosField, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(panelDibujo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ejemploField, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(atributosField)
-                            .addComponent(ejemploField)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(panelDibujo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(atributosField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(ejemploField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(startButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(generateRules)
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(3, 3, 3)
+                .addComponent(atributosField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ejemploField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(startButton)
                 .addContainerGap())
         );
 
@@ -162,9 +155,9 @@ public class mainWindow extends javax.swing.JFrame {
         } finally {
             Id3 id3 = new Id3(ejemploList, atributoList);
             id3.exec(ejemploList, atributoList);
-            //Nodo origen = id3.getNodoOrigen();
-            id3.dibujaArbol(this.panelDibujo);
-            this.panelDibujo = new myPanel();
+            this.resultadoArea.setText("");
+            for (String i : id3.dameReglas()) 
+                this.resultadoArea.setText(this.resultadoArea.getText() + "\n"+ i);
             try {
                 fr1.close();
                 fr2.close();
@@ -220,8 +213,12 @@ public class mainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField atributosField;
     private javax.swing.JTextField ejemploField;
-    private javax.swing.JButton generateRules;
-    private javax.swing.JPanel panelDibujo;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea resultadoArea;
     private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
 
