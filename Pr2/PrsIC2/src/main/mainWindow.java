@@ -17,13 +17,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.print.ServiceUIFactory;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
  * @author Test User
  */
 public class mainWindow extends javax.swing.JFrame {
-   
+   private Id3 id3;
     
     /**
      * Creates new form mainWindow
@@ -31,6 +33,7 @@ public class mainWindow extends javax.swing.JFrame {
     public mainWindow() {
         initComponents();
         this.resultadoArea.setEditable(false);
+        id3 = new Id3();
     }
 
     /**
@@ -51,6 +54,12 @@ public class mainWindow extends javax.swing.JFrame {
         resultadoArea = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        consultaUsuario = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        botonConsulta = new javax.swing.JButton();
+        botonCerrar = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -64,7 +73,7 @@ public class mainWindow extends javax.swing.JFrame {
             }
         });
 
-        startButton.setText("Start");
+        startButton.setText("Generar reglas");
         startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startButtonActionPerformed(evt);
@@ -79,6 +88,26 @@ public class mainWindow extends javax.swing.JFrame {
 
         jLabel2.setText("Juego");
 
+        jLabel3.setText("Reglas generadas");
+
+        jLabel4.setText("Introduce tu consulta:");
+
+        botonConsulta.setText("Consultar");
+        botonConsulta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonConsultaActionPerformed(evt);
+            }
+        });
+
+        botonCerrar.setText("Cerrar");
+        botonCerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonCerrarActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Formato: AT1 == ej1; AT2 == ej2 ; ... ATN == ejN (espacios a los lados del ==)");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -86,17 +115,26 @@ public class mainWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+                    .addComponent(consultaUsuario)
+                    .addComponent(jScrollPane2)
                     .addComponent(atributosField, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(ejemploField, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(botonConsulta)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(botonCerrar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(startButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel5)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -110,10 +148,21 @@ public class mainWindow extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ejemploField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(startButton)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(9, 9, 9)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(consultaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(startButton)
+                    .addComponent(botonConsulta)
+                    .addComponent(botonCerrar))
                 .addContainerGap())
         );
 
@@ -153,7 +202,7 @@ public class mainWindow extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(mainWindow.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            Id3 id3 = new Id3(ejemploList, atributoList);
+            id3 = new Id3(ejemploList, atributoList);
             id3.exec(ejemploList, atributoList);
             this.resultadoArea.setText("");
             for (String i : id3.dameReglas()) 
@@ -172,6 +221,31 @@ public class mainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_atributosFieldActionPerformed
 
+    private void botonConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonConsultaActionPerformed
+        buscaRegla();
+       
+    }//GEN-LAST:event_botonConsultaActionPerformed
+
+    private void botonCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCerrarActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_botonCerrarActionPerformed
+    public void buscaRegla() {
+        String[] reglasUsuario = this.consultaUsuario.getText().split(";"), tmp;
+        String atributo, valor;
+        ArrayList<String> arl = new ArrayList();
+        arl.addAll(Arrays.asList(reglasUsuario));
+        int respuesta = id3.reglaContiene(arl);
+        if (respuesta == -1) JOptionPane.showMessageDialog(this, "No se ha podido predecir nada con esos datos");
+        else if (respuesta == 0) JOptionPane.showMessageDialog(this, "LA RESPUESTA ES: SI");
+        else if (respuesta == 1) JOptionPane.showMessageDialog(this, "LA RESPUESTA ES: NO");
+    }
+    // -1 = No se puede contruir una afirmación
+    // 0 = La respuesta es "SI"
+    // 1 = La respuesta es "NO"
+    public boolean buscaReglaRec(String[] atributo_valor, Nodo nodo, int i) {
+        return false;
+    }
     /**
      * @param args the command line arguments
      */
@@ -212,9 +286,15 @@ public class mainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField atributosField;
+    private javax.swing.JButton botonCerrar;
+    private javax.swing.JButton botonConsulta;
+    private javax.swing.JTextField consultaUsuario;
     private javax.swing.JTextField ejemploField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;

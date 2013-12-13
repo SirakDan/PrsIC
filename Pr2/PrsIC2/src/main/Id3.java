@@ -8,6 +8,7 @@ package main;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import javax.swing.JPanel;
 
 /**
@@ -343,7 +344,7 @@ public class Id3 {
         if(arbol==null) return;
         if (arbol.getHijos().isEmpty()) {
             String respuesta = (arbol.getNombre().equalsIgnoreCase("+"))?"si":"no";
-            frase += " " + arbol.getVertice() + ", entonces: " + respuesta;
+            frase += " " + arbol.getVertice() + " entonces: " + respuesta;
             reglas.add(frase);
         }
         else {
@@ -366,60 +367,42 @@ public class Id3 {
         return this.profundidad;
     }
     
-    public void dibujaArbol(JPanel panel) {
-        Graphics g = panel.getGraphics();
-        this.hijosDibujados=1;
-        dibujaArbolRec(g, origen, panel.getHeight(), panel.getWidth(), 1);
+    private String trim(String cadenaConEspacios) {
+        StringTokenizer tokenizer = new StringTokenizer(cadenaConEspacios);
+        StringBuilder cadenaSinEspacios = new StringBuilder();
+ 
+    while(tokenizer.hasMoreTokens()){
+        cadenaSinEspacios.append(tokenizer.nextToken());
     }
-    private class Posicion{
-        private int x;
-        private int y;
-        private int anchura;
-        private int altura;
-        //private int hijosDibujados;
-        public Posicion() {
-            
-        }
+ 
+    return cadenaSinEspacios.toString();
     }
-    private Posicion dibujaArbolRec(Graphics g, Nodo nodo, int height, int width, int nivel){
-        if (g==null) return null;
-        //Nodo hoja:
-        //drawRect(int x, int y, int width, int height)
-        int yInit = (height/profundidad)*nivel-(height/profundidad*7);
-        int xInit = (width/numeroHojas)*this.hijosDibujados; 
-        int anchura = (width/numeroHojas)/6;
-        int altura = (height/profundidad)/4;
-        Posicion pos;
-        if (nodo.getHijos().isEmpty()){
-            g.setColor(Color.gray);
-            g.drawRect(xInit, yInit, anchura, altura);
-            g.setColor(Color.black);
-            g.drawString(nodo.getNombre(), (xInit+anchura)/3, (yInit+altura)/3);
-            this.hijosDibujados++;
-            pos = new Posicion();
-            pos.altura=altura;
-            pos.anchura=anchura;
-            pos.x=xInit;
-            pos.y=yInit;
-            return pos;
-        } else {
-            ArrayList<Posicion> posi = new ArrayList();
-            for (Nodo i : nodo.getHijos()) {
-                posi.add(dibujaArbolRec(g, i, height, width, nivel+1));
-            }
-            xInit = posi.get(0).x + posi.get(posi.size()-1).x;
-            g.setColor(Color.gray);
-            g.drawRect(xInit, yInit, anchura, altura);
-            g.setColor(Color.black);
-            g.drawString(nodo.getNombre(), (xInit+anchura)/3, (yInit+altura)/3);
-            pos = new Posicion();
-            pos.altura=altura;
-            pos.anchura=anchura;
-            pos.x=xInit;
-            pos.y=yInit;
-        }
-        //TODO: cambiar este return
-        return pos;
+    //-1 : imposible
+    //0 :  "SI"
+    //1 : "NO"
+    public int reglaContiene(ArrayList<String> reglas) {
+        String[] tmp;
+        String dbg;
+        boolean retorno = false;
+        CharSequence cs;
         
+        for (int i = 0; i < this.reglas.size(); i++) {
+            if (!retorno) {
+                if (this.reglas.get(i).split("&&").length == reglas.size() )
+                    for (int j = 0; j < reglas.size(); j++) {
+                        cs = trim(reglas.get(j).toLowerCase());
+                        dbg = trim(this.reglas.get(i).toLowerCase());
+                        System.out.println("THIS: " + cs);
+                        System.out.println("THOS: " + reglas.get(j).toLowerCase());
+                        retorno = dbg.contains(cs);
+                    }
+            } if (retorno){
+                tmp = this.reglas.get(i).split("entonces: ");
+                if (tmp[1].equalsIgnoreCase("si")) return 0;
+                else return 1;
+            }
+        }
+        return -1;
     }
+    
 }
