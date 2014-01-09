@@ -106,7 +106,7 @@ public class mainWindow extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setText("Formato: AT1 == ej1; AT2 == ej2 ; ... ATN == ejN (espacios a los lados del ==)");
+        jLabel5.setText("Formato: AT1 == ej1; AT2 == ej2 ; ... ATN == ejN");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

@@ -173,7 +173,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Formato: AT1 == ej1; AT2 == ej2 ; ... ATN == ejN (espacios a los lados del ==)"/>
+        <Property name="text" type="java.lang.String" value="Formato: AT1 == ej1; AT2 == ej2 ; ... ATN == ejN"/>
       </Properties>
     </Component>
   </SubComponents>
