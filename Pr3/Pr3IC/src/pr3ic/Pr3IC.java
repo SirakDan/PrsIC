@@ -17,6 +17,8 @@ public class Pr3IC {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Kmeans km = new Kmeans();
+        km.entrena(null);
     }
     
 }
