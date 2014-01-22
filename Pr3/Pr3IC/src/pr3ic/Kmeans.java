@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 public class Kmeans {
     private int N; //d está relacionado con n.
     private int c; //c está relacionado con j.
+    private ArrayList<double[]> Vfinal;
     /**
      * 
      * @param X
@@ -142,6 +143,7 @@ public class Kmeans {
                 i += 1;
                 i = i % 2;
             }
+            Vfinal = (ArrayList<double[]>) V.clone();
         } catch (FileNotFoundException ex) {
             System.err.println("Archivo no encontrado.");
         } catch (IOException ex) {
