@@ -23,7 +23,13 @@ import java.util.logging.Logger;
 public class Kmeans {
     private int N; //d está relacionado con n.
     private int c; //c está relacionado con j.
+    private ArrayList<String> clases;
     private ArrayList<double[]> Vfinal;
+    
+    public Kmeans() {
+        clases = new ArrayList();
+        
+    }
     /**
      * 
      * @param X
@@ -32,7 +38,10 @@ public class Kmeans {
      * @param b 
      * @return P.
      */
-    public double calculaP(double[] X, ArrayList<double[]> V, int i, int b) {
+    
+    
+    
+    private double calculaP(double[] X, ArrayList<double[]> V, int i, int b) {
         double sum = 0;
         double P;
         for (int r = 0; r < c; r++) 
@@ -41,14 +50,14 @@ public class Kmeans {
         return P;
     }
     
-    public double distancia(double[] X, double[] V) {
+    private double distancia(double[] X, double[] V) {
         double distancia = 0.0;
         for (int i = 0; i < N; i ++) 
             distancia+=pow(X[i]-V[i],2);
         return distancia;
     }
     
-    public double[] multiplica(double d, double[] v1) {
+    private double[] multiplica(double d, double[] v1) {
         double[] vector = new double[N];
         for (int i = 0; i < N; i++) {
             vector[i] = (d*v1[i]);
@@ -56,21 +65,21 @@ public class Kmeans {
         return vector;
     }
    
-    public double[] suma(double[] v1, double[] v2) {
+    private double[] suma(double[] v1, double[] v2) {
         double[] resultado = new double[N];
         for (int i = 0; i < N; i++) 
             resultado[i] = v1[i] + v2[i];
         return resultado;
     }
     
-    public double[] divide(double[] v, double num) {
+    private double[] divide(double[] v, double num) {
         double[] resultado = new double[N];
         for (int i = 0; i < N; i++) 
             resultado[i]=v[i]/num;
         return resultado;
     }
     
-    public double[] vector(ArrayList<double[]> V, ArrayList<double[]> X, int i, int b){
+    private double[] vector(ArrayList<double[]> V, ArrayList<double[]> X, int i, int b){
         double[] vector, vectorAcumulado=new double[N];
         for (int j = 0; j < N; j++) vectorAcumulado[j]=0;
         double denominador=0;
@@ -86,6 +95,10 @@ public class Kmeans {
         return vectorAcumulado;
     }
     
+    public void añadeClase(String clase) {
+        clases.add(clase);
+    }
+    
     public void entrena(String fichero) {
 
         FileReader fr = null;
@@ -97,7 +110,7 @@ public class Kmeans {
             double[] tmp;
             
             String[] split;
-            File archivo = new File ("Iris2Clases.txt");
+            File archivo = new File (fichero);
             fr = new FileReader (archivo);
             BufferedReader br = new BufferedReader(fr);
             String linea;
@@ -158,5 +171,49 @@ public class Kmeans {
         }
     }
     
+    public boolean pertenece(String fichero) {
+        boolean pertenencia = false;
+        double[] muestra = null;
+        String clase = "";
+        FileReader fr = null;
+        int p = -1;
+        
+        double distancia, distanciaMin = Double.MAX_VALUE;
+        String[] split;
+        File archivo = new File (fichero);
+
+        try {
+            fr = new FileReader (archivo);
+            BufferedReader br = new BufferedReader(fr);
+            String linea;
+            if ((linea=br.readLine())!=null){
+                split=linea.split(",");
+                muestra = new double[split.length-1];
+                for(int i = 0; i < split.length-1; i++) muestra[i]=Double.parseDouble(split[i]);
+                clase = split[split.length-1];
+            }
+            if (muestra != null){
+                for(int i = 0; i < Vfinal.size(); i++) {
+                    distancia = distancia(Vfinal.get(i), muestra);
+                    if (distancia  < distanciaMin) {
+                        distanciaMin = distancia;
+                        p = i;
+                    }
+                }
+                if (clase.equalsIgnoreCase(clases.get(p)))
+                    pertenencia = true;
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(Kmeans.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NumberFormatException ex) {
+            System.err.println("Error al parsear los números del archivo " + fichero + ". Por favor, revise y vuelva a intentarlo.");
+        }
+        finally {
+            
+        }
+        return pertenencia;   
+    }
+        
+    }
     
-}
+

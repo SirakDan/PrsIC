@@ -17,8 +17,20 @@ public class Pr3IC {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        String prueba = "TestIris03.txt";
+        String fichero = "Iris2Clases.txt";
         Kmeans km = new Kmeans();
-        km.entrena(null);
+        km.entrena(fichero);
+        km.añadeClase("Iris-setosa");
+        km.añadeClase("Iris-versicolor");
+        if (km.pertenece(prueba))
+            System.out.println("Clasificación de " + prueba + " correcta.");
+        else 
+            System.out.println("Clasificación de " + prueba + " incorrecta.");
+        Bayes by = new Bayes();
+        by.entrena(fichero);
+        if (by.pertenencia(prueba)) System.out.println("OH YEAH");
+        else System.out.println("OH NO...");
     }
     
 }
