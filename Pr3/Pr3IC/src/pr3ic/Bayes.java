@@ -25,10 +25,32 @@ public class Bayes {
     private int caracteristicas;
     private ArrayList<double[][]> C;
     private ArrayList<double[][]> m;
+    private ArrayList<String> muestras;
+    private ArrayList<String> muestrasClases;
     private ArrayList<String> clases;
     
     //TODO: Al sacar los datos hay que dividir los ejemplos.
+    public ArrayList<String> getMuestras() {
+        return muestras;
+    }
     
+    public ArrayList<String> getClases() {
+        return clases;
+    }
+    
+    public ArrayList<String> getMuestrasClases() {
+        return muestrasClases;
+    }
+    
+    public int getCaracteristicasCount(){
+        return caracteristicas;
+    }
+    public ArrayList<double[][]> getC(){
+        return C;
+    }
+    public ArrayList<double[][]> getM(){
+        return m;
+    }
     //Se debe sacar un m por cada clase.
     private double[][] m(ArrayList<double[][]> X){
         double[][] sum = new double[caracteristicas][1];
@@ -70,6 +92,8 @@ public class Bayes {
             ArrayList<double[][]> X = new ArrayList();
             ArrayList<ArrayList> XV = new ArrayList();
             clases = new ArrayList();
+            muestras = new ArrayList();
+            muestrasClases = new ArrayList();
             Boolean encontrado = false;
             double[][] tmp;
             int N;
@@ -78,12 +102,17 @@ public class Bayes {
             fr = new FileReader (archivo);
             BufferedReader br = new BufferedReader(fr);
             String linea;
+            String tmp1 = "";
             while((linea=br.readLine())!=null){
                 split = linea.split(",");
                 tmp = new double[split.length-1][1];
                 N = split.length-1;
+                tmp1 = "( ";
                 for (int i = 0; i < split.length; i++){
-                    if (i<split.length-1) tmp[i][0]=Double.valueOf(split[i]);
+                    if (i<split.length-1) {
+                        tmp[i][0]=Double.valueOf(split[i]);
+                        tmp1 += tmp[i][0] + ", ";
+                    }
                     else {
                         for (int j = 0; j < clases.size(); j++) 
                             if (clases.get(j).equalsIgnoreCase(split[i])) {
@@ -96,6 +125,10 @@ public class Bayes {
                             XV.get(XV.size()-1).add(tmp);
                         }
                         encontrado = false;
+                        tmp1 += " )";
+                        muestras.add(tmp1);
+                        muestrasClases.add(split[i]);
+                        tmp1 = "";
                     }
                     
                 }

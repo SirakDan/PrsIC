@@ -6,17 +6,28 @@
 
 package pr3ic;
 
+import java.util.ArrayList;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author DanSirak
  */
 public class VentanaPr3 extends javax.swing.JFrame {
-
+    private Kmeans km;
+    private Bayes by;
+    private String prueba;
+    private String muestra;
     /**
      * Creates new form VentanaPr3
      */
     public VentanaPr3() {
         initComponents();
+        km = null;
+        by = null;
     }
 
     /**
@@ -40,7 +51,8 @@ public class VentanaPr3 extends javax.swing.JFrame {
         archivoTestField = new javax.swing.JTextField();
         explorarTestBoton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        resultadoArea = new javax.swing.JTextArea();
+        clasificaBoton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaMuestras = new javax.swing.JTable();
@@ -52,8 +64,18 @@ public class VentanaPr3 extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         entrenarBoton.setText("Entrenar");
+        entrenarBoton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                entrenarBotonActionPerformed(evt);
+            }
+        });
 
         examinarMuestras.setText("Examinar");
+        examinarMuestras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                examinarMuestrasActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Muestras para entrenar:");
 
@@ -61,15 +83,41 @@ public class VentanaPr3 extends javax.swing.JFrame {
         kmeansRadioButton.setText("K-means");
 
         buttonGroup1.add(bayesRadioButton);
+        bayesRadioButton.setSelected(true);
         bayesRadioButton.setText("Bayes");
 
         jLabel2.setText("Archivo test:");
 
         explorarTestBoton.setText("Explorar");
+        explorarTestBoton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                explorarTestBotonActionPerformed(evt);
+            }
+        });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        resultadoArea.setColumns(20);
+        resultadoArea.setRows(5);
+        resultadoArea.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                resultadoAreaMouseClicked(evt);
+            }
+        });
+        resultadoArea.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                resultadoAreaFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                resultadoAreaFocusLost(evt);
+            }
+        });
+        jScrollPane1.setViewportView(resultadoArea);
+
+        clasificaBoton.setText("Clasifica");
+        clasificaBoton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clasificaBotonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -84,22 +132,24 @@ public class VentanaPr3 extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(examinarMuestras, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                    .addComponent(kmeansRadioButton)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(bayesRadioButton))
-                                .addComponent(entrenarBoton, javax.swing.GroupLayout.Alignment.TRAILING))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(archivoTestField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(explorarTestBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(kmeansRadioButton)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(bayesRadioButton))
+                                    .addComponent(entrenarBoton, javax.swing.GroupLayout.Alignment.TRAILING)))
+                            .addComponent(clasificaBoton, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -124,7 +174,9 @@ public class VentanaPr3 extends javax.swing.JFrame {
                     .addComponent(explorarTestBoton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(archivoTestField))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
+                .addComponent(clasificaBoton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -154,20 +206,17 @@ public class VentanaPr3 extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                .addComponent(jLabel3)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 745, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -190,7 +239,7 @@ public class VentanaPr3 extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -207,13 +256,14 @@ public class VentanaPr3 extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 733, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -221,10 +271,10 @@ public class VentanaPr3 extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -233,45 +283,146 @@ public class VentanaPr3 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VentanaPr3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VentanaPr3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VentanaPr3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VentanaPr3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void examinarMuestrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_examinarMuestrasActionPerformed
+        JFileChooser jfc = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "TXT files", "txt");
+        jfc.setFileFilter(filter);
+        int returnVal = jfc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            muestrasField.setText(jfc.getSelectedFile().getPath());
         }
-        //</editor-fold>
+    }//GEN-LAST:event_examinarMuestrasActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new VentanaPr3().setVisible(true);
+    private void explorarTestBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_explorarTestBotonActionPerformed
+        
+        JFileChooser jfc = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "TXT files", "txt");
+        jfc.setFileFilter(filter);
+        int returnVal = jfc.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            archivoTestField.setText(jfc.getSelectedFile().getPath());
+        }
+    }//GEN-LAST:event_explorarTestBotonActionPerformed
+
+    private void entrenarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entrenarBotonActionPerformed
+        // TODO code application logic here
+        String fichero = muestrasField.getText();
+        if (kmeansRadioButton.isSelected()) {
+            km = new Kmeans();
+            km.entrena(fichero);
+            ArrayList<String> m = km.getMuestras();
+            ArrayList<String> c = km.getClases();
+            ArrayList<double[]> v = km.getMeans();
+            ArrayList<String> vc = km.getVClases();
+            DefaultTableModel modelo = (DefaultTableModel) tablaMuestras.getModel();
+            int cantidad = m.size();
+            modelo.setRowCount(cantidad);
+            for (int i = 0; i < cantidad; i++) {
+                tablaMuestras.setValueAt(m.get(i), i, 0);
+                tablaMuestras.setValueAt(c.get(i), i, 1);
             }
-        });
-    }
+            modelo = (DefaultTableModel) tablaCentros.getModel();
+            cantidad =v.size();
+            modelo.setRowCount(cantidad);
+            String tmp = "";
+            double[] tmpD;
+            for (int i = 0; i < cantidad; i++) {
+               tmp = "(";
+               for (int j = 0; j < v.get(i).length; j++){
+                   tmp += (v.get(i)[j]) + " ";
+               }
+               tmp += ")";
+                tablaCentros.setValueAt(tmp, i, 0);
+                tablaCentros.setValueAt(vc.get(i), i, 1);
+            }
+        } else 
+            if (bayesRadioButton.isSelected()) {
+                by = new Bayes();
+                by.entrena(fichero);
+                ArrayList<String> m = by.getMuestras();
+                ArrayList<String> c = by.getMuestrasClases();
+                DefaultTableModel modelo = (DefaultTableModel) tablaMuestras.getModel();
+                int cantidad = m.size();
+                modelo.setRowCount(cantidad);
+                for (int i = 0; i < cantidad; i++) {
+                    tablaMuestras.setValueAt(m.get(i), i, 0);
+                    tablaMuestras.setValueAt(c.get(i), i, 1);
+                }
+                modelo = (DefaultTableModel) tablaCentros.getModel();
+                
+                
+                ArrayList<double[][]> C = by.getC();
+                ArrayList<double[][]> M = by.getM();
+                cantidad =M.size();
+                modelo.setRowCount(cantidad);
+                String tmp = "";
+                String frase;
+                String fraseM;
+                for (int k = 0; k < by.getClases().size(); k++) {
+                    frase = "C= {";
+                    fraseM = "M= {";
+                    for (int i = 0; i < by.getCaracteristicasCount(); i++) {
+                        for(int j = 0; j < by.getCaracteristicasCount(); j++){
+                            frase += C.get(k)[i][j] + ", ";
+                            
+                        }
+                        fraseM += M.get(k)[i][0] + ", ";
+                        if (i < by.getCaracteristicasCount()-1) frase += "  ";
+
+                    }
+                    frase += "}";
+                    fraseM += "}";
+                    tablaCentros.setValueAt(by.getClases().get(k), k, 0);
+                    tablaCentros.setValueAt(fraseM + "\n" +  frase, k, 1);
+            }
+            }
+        
+    }//GEN-LAST:event_entrenarBotonActionPerformed
+
+    private void clasificaBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clasificaBotonActionPerformed
+        if (kmeansRadioButton.isSelected()) { 
+            if(km == null) JOptionPane.showMessageDialog(this, "Necesita entrenar el algoritmo antes");
+            else {
+                prueba = archivoTestField.getText();
+                if (km.pertenece(prueba))
+                    resultadoArea.setText("Clasificación de " + prueba + " correcta.");
+                else 
+                    resultadoArea.setText("Clasificación de " + prueba + " incorrecta.");
+            }
+        } else if (bayesRadioButton.isSelected()){
+            if(by == null) JOptionPane.showMessageDialog(this, "Necesita entrenar el algoritmo antes");
+            else {
+                prueba = archivoTestField.getText();
+                if (by.pertenencia(prueba))
+                    resultadoArea.setText("Clasificación de " + prueba + " correcta.");
+                else 
+                    resultadoArea.setText("Clasificación de " + prueba + " incorrecta.");
+            }
+        }
+    }//GEN-LAST:event_clasificaBotonActionPerformed
+
+    private void resultadoAreaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_resultadoAreaMouseClicked
+        if (!resultadoArea.getText().equalsIgnoreCase(""))
+            JOptionPane.showMessageDialog(this, resultadoArea.getText());
+    }//GEN-LAST:event_resultadoAreaMouseClicked
+
+    private void resultadoAreaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_resultadoAreaFocusGained
+       // if (!resultadoArea.getText().equalsIgnoreCase(""))
+         //   JOptionPane.showMessageDialog(this, resultadoArea.getText());
+    }//GEN-LAST:event_resultadoAreaFocusGained
+
+    private void resultadoAreaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_resultadoAreaFocusLost
+        this.transferFocus();
+    }//GEN-LAST:event_resultadoAreaFocusLost
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField archivoTestField;
     private javax.swing.JRadioButton bayesRadioButton;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton clasificaBoton;
     private javax.swing.JButton entrenarBoton;
     private javax.swing.JButton examinarMuestras;
     private javax.swing.JButton explorarTestBoton;
@@ -284,9 +435,9 @@ public class VentanaPr3 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JRadioButton kmeansRadioButton;
     private javax.swing.JTextField muestrasField;
+    private javax.swing.JTextArea resultadoArea;
     private javax.swing.JTable tablaCentros;
     private javax.swing.JTable tablaMuestras;
     // End of variables declaration//GEN-END:variables

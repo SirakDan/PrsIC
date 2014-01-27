@@ -25,10 +25,19 @@ public class Kmeans {
     private int c; //c está relacionado con j.
     private ArrayList<String> clases;
     private ArrayList<double[]> Vfinal;
-    
+    private ArrayList<String> muestras;
+    private ArrayList<String> claseMuestra;
     public Kmeans() {
         clases = new ArrayList();
-        
+        muestras = new ArrayList();
+        claseMuestra = new ArrayList();
+    }
+    
+    public ArrayList<String> getMuestras() {
+        return muestras;
+    }
+    public ArrayList<String> getClases() {
+        return claseMuestra;
     }
     /**
      * 
@@ -105,7 +114,7 @@ public class Kmeans {
         try {
             ArrayList<double[]> X = new ArrayList();
             ArrayList<double[]> V = new ArrayList();
-            ArrayList<String> clases = new ArrayList();
+            //ArrayList<String> clases = new ArrayList();
             Boolean encontrado = false;
             double[] tmp;
             
@@ -114,14 +123,24 @@ public class Kmeans {
             fr = new FileReader (archivo);
             BufferedReader br = new BufferedReader(fr);
             String linea;
+            String tmp1 = "";
+            
             while((linea=br.readLine())!=null){
                 split = linea.split(",");
                 tmp = new double[split.length-1];
                 this.N = split.length-1;
+                tmp1 = "( ";
                 for (int i = 0; i < split.length; i++){
-                    if (i<split.length-1) tmp[i]=Double.valueOf(split[i]);
+                    if (i<split.length-1){
+                        tmp[i]=Double.valueOf(split[i]);
+                        if (i < split.length-2)tmp1 += tmp[i] + ",";
+                        else tmp1 += tmp[i];
+                    }
                     else {
                         X.add(tmp);
+                        tmp1 += " )";
+                        muestras.add(tmp1);
+                        claseMuestra.add(split[i]);
                         for (int j = 0; j < clases.size(); j++) if (clases.get(j).equalsIgnoreCase(split[i])) encontrado = true;
                         if (!encontrado) clases.add(split[i]);
                         encontrado = false;
@@ -212,6 +231,14 @@ public class Kmeans {
             
         }
         return pertenencia;   
+    }
+
+    public ArrayList<double[]> getMeans() {
+        return Vfinal;
+    }
+    
+    public ArrayList<String> getVClases() {
+        return clases;
     }
         
     }
