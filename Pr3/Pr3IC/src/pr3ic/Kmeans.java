@@ -32,24 +32,31 @@ public class Kmeans {
         muestras = new ArrayList();
         claseMuestra = new ArrayList();
     }
-    
+    /**
+     * Getter de muestras
+     * @return listado con las muestras cargadas.
+     */
     public ArrayList<String> getMuestras() {
         return muestras;
     }
+    
+    /**
+     * Getter de las clases.
+     * @return listado con las clases de las muestras.
+     */
     public ArrayList<String> getClases() {
         return claseMuestra;
     }
+    
     /**
      * 
-     * @param X
-     * @param V 
-     * @param i 
-     * @param b 
-     * @return P.
+     * Funcion para calcular la probabilidad de pertenencia de X a V(i) con peso b.
+     * @param X: La muestra candidata.
+     * @param V: Listado de centros de esta iteración.
+     * @param i: Centro del cual queremos obtener la probabilidad.
+     * @param b: Peso del método.
+     * @return P: Probabilidad de pertenencia de X a V(i) con peso b.
      */
-    
-    
-    
     private double calculaP(double[] X, ArrayList<double[]> V, int i, int b) {
         double sum = 0;
         double P;
@@ -59,6 +66,12 @@ public class Kmeans {
         return P;
     }
     
+    /**
+     * Función para calcular la distancia entre dos puntos.
+     * @param X; Primer punto.
+     * @param V: Segundo punto.
+     * @return: distancia de X a V. 
+     */
     private double distancia(double[] X, double[] V) {
         double distancia = 0.0;
         for (int i = 0; i < N; i ++) 
@@ -66,6 +79,12 @@ public class Kmeans {
         return distancia;
     }
     
+    /**
+     * Función que multiplica una matriz por un escalar.
+     * @param d: Escalar.
+     * @param v1: Matriz a multiplicar.
+     * @return el resultado de multiplicar todos los elementos de v1 por d.
+     */
     private double[] multiplica(double d, double[] v1) {
         double[] vector = new double[N];
         for (int i = 0; i < N; i++) {
@@ -74,6 +93,12 @@ public class Kmeans {
         return vector;
     }
    
+    /**
+     * Suma elemento a elemento de dos matrices (v1 + v2)
+     * @param v1: Matriz v1.
+     * @param v2: Matriz v2.
+     * @return: Suma elemento a elemento de las matrices v1 y v2.
+     */
     private double[] suma(double[] v1, double[] v2) {
         double[] resultado = new double[N];
         for (int i = 0; i < N; i++) 
@@ -81,6 +106,12 @@ public class Kmeans {
         return resultado;
     }
     
+    /**
+     * División de la matriz v por el escalar num.
+     * @param v: Matriz.
+     * @param num: escalar.
+     * @return: División elemento a elemento de la matriz V.
+     */
     private double[] divide(double[] v, double num) {
         double[] resultado = new double[N];
         for (int i = 0; i < N; i++) 
@@ -88,6 +119,14 @@ public class Kmeans {
         return resultado;
     }
     
+    /**
+     * Cálculo del V(t+1) a partir de V y las muestras.
+     * @param V: ArrayList con todos los centros.
+     * @param X: ArrayList con todas las muestras.
+     * @param i: Número del centro con el que estamos trabajando.
+     * @param b: Peso de la función.
+     * @return: V(t+1)
+     */
     private double[] vector(ArrayList<double[]> V, ArrayList<double[]> X, int i, int b){
         double[] vector, vectorAcumulado=new double[N];
         for (int j = 0; j < N; j++) vectorAcumulado[j]=0;
@@ -104,10 +143,21 @@ public class Kmeans {
         return vectorAcumulado;
     }
     
+    /**
+     * Método para añadir una clase 
+     * @param clase: Clase a añadir. 
+     */
+    @Deprecated
     public void añadeClase(String clase) {
         clases.add(clase);
     }
     
+    /**
+     * Función para entrenar el clasificador a partir de las muestras de fichero.
+     * El formato de @param fichero debe ser el siguiente:
+     * Valor1,valor2,...,valorN,nombreClase.
+     * @param fichero: Fichero con las muestras
+     */
     public void entrena(String fichero) {
 
         FileReader fr = null;
@@ -190,6 +240,16 @@ public class Kmeans {
         }
     }
     
+    
+    /**
+     * Función para comprobar la correcta clasificación de la muestra de fichero.
+     * @param fichero: Fichero con la muestra a comprobar.
+     * 
+     * Formato:
+     * valor1,valor2,...,valorN,nombreClase
+     * 
+     * @return true si valor1...valorN corresponde a la clase nombreClase 
+     */
     public boolean pertenece(String fichero) {
         boolean pertenencia = false;
         double[] muestra = null;
@@ -232,11 +292,19 @@ public class Kmeans {
         }
         return pertenencia;   
     }
-
+    
+    /**
+     * Getter de las medias
+     * @return ArrayList con los means
+     */
     public ArrayList<double[]> getMeans() {
         return Vfinal;
     }
     
+    /**
+     * Getter con las clases de las medias.
+     * @return ArrayList con las clases de las medias.
+     */
     public ArrayList<String> getVClases() {
         return clases;
     }

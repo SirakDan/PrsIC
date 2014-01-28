@@ -28,6 +28,7 @@ public class VentanaPr3 extends javax.swing.JFrame {
         initComponents();
         km = null;
         by = null;
+        this.setName("Clasificador Pr3");
     }
 
     /**

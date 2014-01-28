@@ -30,28 +30,60 @@ public class Bayes {
     private ArrayList<String> clases;
     
     //TODO: Al sacar los datos hay que dividir los ejemplos.
+    
+    /**
+     * Getter de muestras.
+     * @return el arraylist con las muestras
+     */
     public ArrayList<String> getMuestras() {
         return muestras;
     }
     
+    /**
+     * Getter de clases
+     * @return el arraylist con las clases
+     */
     public ArrayList<String> getClases() {
         return clases;
     }
     
+    /**
+     * Getter con la clase de la muestra i € i = 1...N.
+     * @return 
+     */
     public ArrayList<String> getMuestrasClases() {
         return muestrasClases;
     }
     
+    /**
+     * Numero de caracteristicas del vector Xi € i = 1...N
+     * @return 
+     */
     public int getCaracteristicasCount(){
         return caracteristicas;
     }
+    
+    /**
+     * Getter de la matriz C.
+     * @return array de array de doubles con C.
+     */
     public ArrayList<double[][]> getC(){
         return C;
     }
+    
+    /**
+     * Getter de la matriz M.
+     * @return array de array de doubles con M.
+     */
     public ArrayList<double[][]> getM(){
         return m;
     }
-    //Se debe sacar un m por cada clase.
+
+    /**
+     * Calcula la matriz media M.
+     * @param X: ArrayList con todas las muestras.
+     * @return La matriz M.
+     */
     private double[][] m(ArrayList<double[][]> X){
         double[][] sum = new double[caracteristicas][1];
         Matrix a = new Matrix(sum);
@@ -65,6 +97,11 @@ public class Bayes {
         return a.getArrayCopy();
     }
     
+    /**
+     * Calcula la matriz de covarianza.
+     * @param X ArrayList con todas las muestras.
+     * @return la matriz C.
+     */
     public double[][] c(ArrayList<double[][]> X) {
         int N = new Matrix(X.get(0)).getRowDimension();
         double[][] r;
@@ -86,6 +123,14 @@ public class Bayes {
         return C.getArrayCopy();
     }
     
+    /**
+     * Funcion que recibe un conjunto de muestras y entrena el clasificador con
+     * ellas. El formato de las muestras debe ser el siguiente:
+     * 
+     * Valor1,valor2,valor3,...,valorN,NombreClase
+     * 
+     * @param fichero: Archivo donde se encuentran las muestras.
+     */
     public void entrena(String fichero) {
         FileReader fr = null;
         try {
@@ -141,23 +186,21 @@ public class Bayes {
                 C.add(c(XV.get(i)));
                 m.add(m(XV.get(i)));
             }
-                
 
-            String frase = "C= \n {";
-            for (int k = 0; k < XV.size(); k++) {
-                for (int i = 0; i < caracteristicas; i++) {
-                    for(int j = 0; j < caracteristicas; j++)
-                        frase += C.get(k)[i][j] + ", ";
-                    if (i < caracteristicas-1) frase += "\n  ";
-                }
-                frase += "} \n\n\n\n {";
-            }
-            System.out.println(frase);
         } catch(IOException | NumberFormatException e) {
             System.err.println("Error IO / Numero");
         }
     }
     
+    
+    /**
+     * Calcula la probabilidad de pertenencia de Xi a una clase determinada.
+     * @param Xi: Muestra de la cual se calculará la probabilidad.
+     * @param m: Media de la clase.
+     * @param c: Covarianza de la case.
+     * @return Probabilidad en double de la pertenencia de Xi a la clase 
+     * cuya m y c se pasan.
+     */
     public double probabilidad (double[][] Xi, double[][] m, double[][] c) {
         double probabilidad = 0;
         int d = 2;
@@ -179,6 +222,13 @@ public class Bayes {
         return probabilidad;
     }
     
+    /**
+     * Método para determinar si una muestra está correctamente clasificada.
+     * El formato para esto es:
+     * Valor1,valor2,...,valorN,claseCandidata
+     * @param fichero
+     * @return 
+     */
     public boolean pertenencia(String fichero) {
         boolean pertenencia = false;
         double[][] muestra = null;
