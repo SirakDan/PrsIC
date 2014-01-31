@@ -19,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 public class VentanaPr3 extends javax.swing.JFrame {
     private Kmeans km;
     private Bayes by;
+    private Lloyd ly;
     private String prueba;
     private String muestra;
     /**
@@ -54,6 +55,7 @@ public class VentanaPr3 extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         resultadoArea = new javax.swing.JTextArea();
         clasificaBoton = new javax.swing.JButton();
+        lloydradiobutton = new javax.swing.JRadioButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaMuestras = new javax.swing.JTable();
@@ -120,6 +122,14 @@ public class VentanaPr3 extends javax.swing.JFrame {
             }
         });
 
+        buttonGroup1.add(lloydradiobutton);
+        lloydradiobutton.setText("Lloyd");
+        lloydradiobutton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lloydradiobuttonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -127,7 +137,7 @@ public class VentanaPr3 extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(muestrasField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -136,21 +146,22 @@ public class VentanaPr3 extends javax.swing.JFrame {
                         .addComponent(archivoTestField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(explorarTestBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(clasificaBoton))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel2)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                        .addComponent(kmeansRadioButton)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(bayesRadioButton))
-                                    .addComponent(entrenarBoton, javax.swing.GroupLayout.Alignment.TRAILING)))
-                            .addComponent(clasificaBoton, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lloydradiobutton, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(entrenarBoton))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(kmeansRadioButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(bayesRadioButton)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -163,11 +174,13 @@ public class VentanaPr3 extends javax.swing.JFrame {
                     .addComponent(examinarMuestras)
                     .addComponent(muestrasField, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bayesRadioButton)
-                    .addComponent(kmeansRadioButton))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(kmeansRadioButton)
+                    .addComponent(bayesRadioButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(entrenarBoton)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(entrenarBoton)
+                    .addComponent(lloydradiobutton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -378,6 +391,36 @@ public class VentanaPr3 extends javax.swing.JFrame {
                     tablaCentros.setValueAt(by.getClases().get(k), k, 0);
                     tablaCentros.setValueAt(fraseM + "\n" +  frase, k, 1);
             }
+            }else {
+                if (lloydradiobutton.isSelected()){
+                    ly = new Lloyd();
+                    ly.entrena(fichero);
+                    ArrayList<double[][]> centros = ly.getCentros();
+                    ArrayList<String> clases = ly.getClases();
+                    DefaultTableModel modelo = (DefaultTableModel) tablaMuestras.getModel();
+                    ArrayList<String> muestras = ly.getMuestras();
+                    ArrayList<String> mc = ly.getClaseMuestra();
+                    int cantidad = muestras.size();
+                    modelo.setRowCount(cantidad);
+                    for (int i = 0; i < cantidad; i++) {
+                        tablaMuestras.setValueAt(muestras.get(i), i, 1);
+                        tablaMuestras.setValueAt(mc.get(i), i, 0);
+                    }
+                    String frase;
+                    modelo = (DefaultTableModel) tablaCentros.getModel();
+                    cantidad = clases.size();
+                    modelo.setRowCount(cantidad);
+                    for (int k = 0; k < clases.size(); k++) {
+                        frase="C" + (k+1) + "= (";
+                        for (int j = 0; j < ly.getCaracteristicas(); j++){
+                            if (j < ly.getCaracteristicas()-1) frase += centros.get(k)[j][0] + ",";
+                            else frase += centros.get(k)[j][0];
+                        }
+                        frase+=")";
+                        tablaCentros.setValueAt(frase, k, 1);
+                        tablaCentros.setValueAt(clases.get(k), k, 0);
+                    }
+                }
             }
         
     }//GEN-LAST:event_entrenarBotonActionPerformed
@@ -401,6 +444,12 @@ public class VentanaPr3 extends javax.swing.JFrame {
                 else 
                     resultadoArea.setText("Clasificación de " + prueba + " incorrecta.");
             }
+        } else if (lloydradiobutton.isSelected()) {
+                prueba = archivoTestField.getText();
+                if (ly.pertenencia(prueba))
+                    resultadoArea.setText("Clasificación de " + prueba + " correcta.");
+                else 
+                    resultadoArea.setText("Clasificación de " + prueba + " incorrecta.");
         }
     }//GEN-LAST:event_clasificaBotonActionPerformed
 
@@ -417,6 +466,10 @@ public class VentanaPr3 extends javax.swing.JFrame {
     private void resultadoAreaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_resultadoAreaFocusLost
         this.transferFocus();
     }//GEN-LAST:event_resultadoAreaFocusLost
+
+    private void lloydradiobuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lloydradiobuttonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lloydradiobuttonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -437,6 +490,7 @@ public class VentanaPr3 extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JRadioButton kmeansRadioButton;
+    private javax.swing.JRadioButton lloydradiobutton;
     private javax.swing.JTextField muestrasField;
     private javax.swing.JTextArea resultadoArea;
     private javax.swing.JTable tablaCentros;
